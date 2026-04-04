@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý User - Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <%- include('../partials/admin-header', { currentPage: 'manage_users' }) %>
+
+    <div class="admin-page">
+        <main class="admin-content">
+            <div class="page-header">
+                <div>
+                    <h1><i class="fas fa-users-cog" style="color:var(--primary);margin-right:10px;"></i>Quản Lý Hệ Thống User</h1>
+                    <p>Quản lý tài khoản đăng nhập và quyền truy cập vào Admin Panel.</p>
+                </div>
+                <a href="/create_user" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Thêm User Mới
+                </a>
+            </div>
+
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <h2>Danh Sách Người Dùng</h2>
+                </div>
+                <div id="tableContainer">
+                    <div class="loading-state"><div class="spinner"></div><p>Đang tải dữ liệu...</p></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <%- include('../partials/admin-footer') %>
+
+    <!-- Modal Delete -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-box">
+            <div class="modal-icon"><i class="fas fa-user-times"></i></div>
+            <h3>Xác nhận xóa tài khoản</h3>
+            <p>Bạn có chắc muốn xóa tài khoản: <strong id="deleteUserTitle" style="color:var(--dark);"></strong> không?</p>
+            <p style="margin-top:8px;color:#ef4444;font-size:.85rem;">
+                <i class="fas fa-exclamation-triangle"></i> Hành động này không thể hoàn tác!
+            </p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Hủy bỏ</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDelete()">Xóa ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin-layout.js"></script>
+    <script>
+        let allUsers = [];
+        let deleteTargetId = null;
+
+        function escapeHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        async function fetchUsers() {
+            try {
+                const res = await fetch('/api/users', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) throw new Error('API error: ' + res.status);
+                allUsers = await res.json();
+                renderTable(allUsers);
+            } catch (err) {
+                document.getElementById('tableContainer').innerHTML =
+                    `<div class="empty-state"><i class="fas fa-wifi-slash"></i><p>Không thể tải dữ liệu.</p></div>`;
+            }
+        }
+
+        function renderTable(users) {
+            const container = document.getElementById('tableContainer');
+
+            if (users.length === 0) {
+                container.innerHTML = `<div class="empty-state"><p>Chưa có user nào.</p></div>`;
+                return;
+            }
+
+            const rows = users.map(u => {
+                const date = formatDate(u.created_at);
+                const roleBadge = u.role === 'admin' 
+                    ? '<span class="badge badge-purple">Admin</span>' 
+                    : `<span class="badge badge-blue">${u.role}</span>`;
+
+                return `
+                <tr>
+                    <td style="color:var(--text-muted); font-weight:600; width:60px;">#${u.id}</td>
+                    <td style="font-weight:600;">${escapeHtml(u.username)}</td>
+                    <td>${u.email ? escapeHtml(u.email) : '—'}</td>
+                    <td>${roleBadge}</td>
+                    <td style="color:var(--text-muted);"><i class="far fa-calendar-alt" style="margin-right:5px;"></i>${date}</td>
+                    <td style="white-space:nowrap;">
+                        <a href="/edit_user/${u.id}" class="btn btn-sm btn-secondary btn-icon" title="Đổi mật khẩu">
+                            <i class="fas fa-key"></i> Đổi Pass
+                        </a>
+                        <button onclick="openDeleteModal(${u.id}, '${escapeHtml(u.username)}')"
+                            class="btn btn-sm btn-danger btn-icon" title="Xóa tài khoản" style="margin-left:6px;">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+
+            container.innerHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên Đăng Nhập</th>
+                            <th>Email</th>
+                            <th>Vai Trò</th>
+                            <th>Ngày Tạo</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>`;
+        }
+
+        function openDeleteModal(id, username) {
+            deleteTargetId = id;
+            document.getElementById('deleteUserTitle').textContent = username;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            deleteTargetId = null;
+            document.getElementById('deleteModal').classList.remove('show');
+        }
+
+        async function confirmDelete() {
+            if (!deleteTargetId) return;
+            const btn = document.getElementById('confirmDeleteBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Xóa...';
+
+            try {
+                const res = await fetch(`/api/users/${deleteTargetId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                
+                if (res.ok) { 
+                    fetchUsers();
+                    closeDeleteModal();
+                } else {
+                    const data = await res.json();
+                    alert(data.error || "Có lỗi xảy ra");
+                }
+            } catch (err) {
+                alert("Không thể kết nối đến máy chủ.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Xóa ngay';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchUsers);
+    </script>
+</body>
+</html>

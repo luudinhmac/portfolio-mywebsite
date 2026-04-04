@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đổi Mật Khẩu User - Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <%- include('../partials/admin-header', { currentPage: 'manage_users' }) %>
+
+    <div class="admin-page">
+        <main class="admin-content">
+            <div class="page-header">
+                <div>
+                    <h1><i class="fas fa-key" style="color:var(--warning);margin-right:10px;"></i>Đổi Mật Khẩu Lại</h1>
+                    <p>Thiết lập mật khẩu mới cho user hệ thống.</p>
+                </div>
+                <a href="/manage_users" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay Lại
+                </a>
+            </div>
+
+            <div class="form-card" style="max-width: 600px; margin: 0 auto;">
+                <div id="alertMsg" class="alert"></div>
+                <!-- Hidden input to store user ID from EJS template -->
+                <input type="hidden" id="userId" value="<%= userId %>">
+                <form id="passForm">
+                    <div class="form-group">
+                        <label for="password">Mật Khẩu Mới <span class="required">*</span></label>
+                        <input type="password" id="password" class="form-control" required placeholder="Nhập mật khẩu an toàn...">
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-save"></i> Cập Nhật
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <%- include('../partials/admin-footer') %>
+
+    <script src="/js/admin-layout.js"></script>
+    <script>
+        document.getElementById('passForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const password = document.getElementById('password').value;
+            const id = document.getElementById('userId').value;
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/users/${id}/password`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}` 
+                    },
+                    body: JSON.stringify({ password })
+                });
+                
+                const data = await res.json();
+                if (res.ok) {
+                    window.location.href = '/manage_users';
+                } else {
+                    showAlert(data.error || 'Lỗi lưu dữ liệu', 'error');
+                }
+            } catch (err) {
+                showAlert('Không thể kết nối đến máy chủ', 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-save"></i> Cập Nhật';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

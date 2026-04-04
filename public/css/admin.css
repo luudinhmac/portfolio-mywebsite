@@ -330,6 +330,9 @@ ul { list-style: none; }
     font-size: .9rem;
     color: var(--text-main);
 }
+.data-table td:last-child {
+    white-space: nowrap;
+}
 
 .data-table tr:last-child td { border-bottom: none; }
 .data-table tbody tr { transition: background .15s; }

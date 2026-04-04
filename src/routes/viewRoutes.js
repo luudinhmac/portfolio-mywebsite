@@ -50,4 +50,17 @@ router.get('/portal-dashboard', (req, res) => {
     res.render('admin/dashboard');
 });
 
+// Admin Users
+router.get('/manage_users', (req, res) => {
+    res.render('admin/manage_users');
+});
+
+router.get('/create_user', (req, res) => {
+    res.render('admin/create_user');
+});
+
+router.get('/edit_user/:id', (req, res) => {
+    res.render('admin/edit_user', { userId: req.params.id });
+});
+
 module.exports = router;
