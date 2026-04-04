@@ -1,16 +1,23 @@
-version: '3.8'
-
+# Remove the version: '3.8' line to avoid deprecation warnings on newer Docker versions
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: portfolio-app
-    ports:
-      - "3000:3000"
+    # IMPORTANT: Remove the ports: - "3000:3000" section to block access via IP:3000
+    expose:
+      - "3000" # Only expose the port so other containers on the same network (e.g., Nginx) can access it
     env_file:
       - .env
     restart: always
+    networks:
+      - web_gateway # Join the shared network created by Ansible
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
+networks:
+  web_gateway:
+    external: true # Specify using an existing network (created by Docker role)
