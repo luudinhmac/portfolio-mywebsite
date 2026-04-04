@@ -65,7 +65,7 @@
             <a href="/" class="nav-brand"><img src="images/zero2ops.jpg" alt="Zero2Ops Logo" class="nav-logo"></a>
             <ul class="nav-links">
                 <li><a href="/">Trang chủ</a></li>
-                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="/blog">Blog</a></li>
                 <li><a href="#" id="logoutBtn" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
             </ul>
         </div>
@@ -154,14 +154,14 @@
         // Authentication Check
         const token = localStorage.getItem('token');
         if (!token) {
-            window.location.href = '/sys-login.html';
+            window.location.href = '/sys-login';
         }
 
         // Logout
         document.getElementById('logoutBtn').addEventListener('click', (e) => {
             e.preventDefault();
             localStorage.removeItem('token');
-            window.location.href = '/sys-login.html';
+            window.location.href = '/sys-login';
         });
 
         // Handle Word Upload
@@ -224,7 +224,7 @@
                     quill.root.innerHTML = "";
                     
                     // Redirect to blog
-                    setTimeout(() => window.location.href = `/post.html?id=${data.id}`, 1000);
+                    setTimeout(() => window.location.href = `/post?id=${data.id}`, 1000);
                 } else {
                     showAlert("Lỗi: " + data.error, false);
                 }

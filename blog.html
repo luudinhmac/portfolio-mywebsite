@@ -52,8 +52,8 @@
             <a href="/" class="nav-brand"><img src="images/zero2ops.jpg" alt="Zero2Ops Logo" class="nav-logo"></a>
             <ul class="nav-links">
                 <li><a href="/">Trang chủ</a></li>
-                <li><a href="/blog.html" class="active">Blog</a></li>
-                <li><a href="sys-login.html" title="Đăng nhập Quản trị"><i class="fas fa-user-shield"></i></a></li>
+                <li><a href="/blog" class="active">Blog</a></li>
+                <li><a href="sys-login" title="Đăng nhập Quản trị"><i class="fas fa-user-shield"></i></a></li>
             </ul>
         </div>
     </nav>
@@ -124,8 +124,8 @@
                             ${seriesTag}
                             <span><i class="far fa-calendar-alt"></i> ${date}</span>
                         </div>
-                        <h2 class="post-title"><a href="/post.html?id=${post.id}">${post.title}</a></h2>
-                        <a href="/post.html?id=${post.id}" class="btn-secondary" style="padding: 8px 20px; margin-top: 15px; display: inline-block;">Đọc tiếp &rarr;</a>
+                        <h2 class="post-title"><a href="/post?id=${post.id}">${post.title}</a></h2>
+                        <a href="/post?id=${post.id}" class="btn-secondary" style="padding: 8px 20px; margin-top: 15px; display: inline-block;">Đọc tiếp &rarr;</a>
                     </article>
                 `;
                 container.insertAdjacentHTML('beforeend', html);

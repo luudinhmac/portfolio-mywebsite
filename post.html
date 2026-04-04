@@ -53,7 +53,7 @@
             <a href="/" class="nav-brand"><img src="images/zero2ops.jpg" alt="Zero2Ops Logo" class="nav-logo"></a>
             <ul class="nav-links">
                 <li><a href="/">Trang chủ</a></li>
-                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="/blog">Blog</a></li>
             </ul>
         </div>
     </nav>
@@ -93,8 +93,12 @@
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get('id');
         
+        function goBack() {
+            window.location.href = '/blog';
+        }
+
         if (!postId) {
-            window.location.href = '/blog.html';
+            window.location.href = '/blog';
         }
 
         async function loadPost() {
@@ -122,7 +126,7 @@
                 
                 loadComments();
             } catch (err) {
-                document.getElementById('loading').innerHTML = '<h2 style="color:red;">Bài viết không tồn tại.</h2><br><a href="/blog.html">Quay lại Blog</a>';
+                document.getElementById('loading').innerHTML = '<h2 style="color:red;">Bài viết không tồn tại.</h2><br><a href="/blog">Quay lại Blog</a>';
             }
         }
         

@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-app.use(express.static(__dirname)); // Phục vụ tĩnh folder này
+app.use(express.static(__dirname, { extensions: ['html'] })); // Phục vụ tĩnh folder này
 
 // Upload config (Lưu vào bộ nhớ đệm để phân tích)
 const upload = multer({ storage: multer.memoryStorage() });
