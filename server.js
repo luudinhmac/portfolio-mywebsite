@@ -136,6 +136,32 @@ app.post('/api/upload-word', verifyToken, upload.single('document'), async (req,
     }
 });
 
+// Sửa bài viết
+app.put('/api/posts/:id', verifyToken, async (req, res) => {
+    const { title, content, category, series, is_pinned } = req.body;
+    try {
+        const [result] = await pool.query(
+            `UPDATE posts SET title=?, content=?, category=?, series=?, is_pinned=? WHERE id=?`,
+            [title, content, category, series, is_pinned ? 1 : 0, req.params.id]
+        );
+        if (result.affectedRows === 0) return res.status(404).json({ error: 'Bài viết không tồn tại' });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Xóa bài viết
+app.delete('/api/posts/:id', verifyToken, async (req, res) => {
+    try {
+        const [result] = await pool.query(`DELETE FROM posts WHERE id=?`, [req.params.id]);
+        if (result.affectedRows === 0) return res.status(404).json({ error: 'Bài viết không tồn tại' });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Lấy danh sách bình luận của bài viết
 app.get('/api/comments/:postId', async (req, res) => {
     try {
