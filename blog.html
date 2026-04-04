@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Lưu Đình Mác</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .blog-header { background: #1e293b; color: white; padding: 120px 20px 60px; text-align: center; }
+        .blog-header h1 { font-size: 3rem; margin-bottom: 15px; }
+        .blog-header p { color: #94a3b8; font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+        
+        .blog-container { max-width: 1100px; margin: 50px auto; padding: 0 20px; display: grid; grid-template-columns: 3fr 1fr; gap: 40px; }
+        
+        .post-card {
+            background: #fff; border-radius: 12px; border: 1px solid #e2e8f0;
+            padding: 30px; margin-bottom: 30px; transition: all 0.3s;
+            position: relative;
+        }
+        .post-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); border-color: #cbd5e1; }
+        
+        .post-meta { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 0.9rem; color: #64748b; }
+        .tag-category { background: #e0f2fe; color: #0284c7; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+        .tag-series { background: #fef08a; color: #854d0e; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+        .post-pinned { position: absolute; top: 30px; right: 30px; color: #f59e0b; font-size: 1.5rem; }
+        
+        .post-title { font-size: 1.8rem; font-weight: 700; color: #1e293b; margin-bottom: 10px; }
+        .post-title a { transition: color 0.2s; }
+        .post-title a:hover { color: #2563eb; }
+        
+        .sidebar { padding: 30px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; height: fit-content; }
+        .sidebar h3 { font-size: 1.2rem; margin-bottom: 20px; border-bottom: 2px solid #2563eb; padding-bottom: 10px; display: inline-block; }
+        .category-list li { margin-bottom: 12px; }
+        .category-list a { color: #475569; font-weight: 500; transition: color 0.2s; cursor: pointer; }
+        .category-list a:hover { color: #2563eb; }
+        
+        @media (max-width: 768px) {
+            .blog-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <!-- Navbar -->
+    <nav class="navbar scanned" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand"><img src="images/zero2ops.jpg" alt="Zero2Ops Logo" class="nav-logo"></a>
+            <ul class="nav-links">
+                <li><a href="/">Trang chủ</a></li>
+                <li><a href="/blog.html" class="active">Blog</a></li>
+                <li><a href="sys-login.html" title="Đăng nhập Quản trị"><i class="fas fa-user-shield"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="blog-header">
+        <h1>Tech Blog & Kiến Thức</h1>
+        <p>Chia sẻ kiến thức, kinh nghiệm và góc nhìn về DevOps, Linux, Ảo hóa và công việc System Engineer.</p>
+    </header>
+
+    <div class="blog-container">
+        <!-- Main Content (Posts) -->
+        <main id="posts-list">
+            <div style="text-align: center; color: #64748b;"><i class="fas fa-spinner fa-spin fa-2x"></i><br>Đang tải bài viết...</div>
+        </main>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>Danh Mục</h3>
+            <ul class="category-list">
+                <li><a onclick="filterCategory('')">Tất cả bài viết</a></li>
+                <li><a onclick="filterCategory('System')">System</a></li>
+                <li><a onclick="filterCategory('DevOps')">DevOps</a></li>
+                <li><a onclick="filterCategory('VMware')">VMWare</a></li>
+                <li><a onclick="filterCategory('Linux')">Linux</a></li>
+                <li><a onclick="filterCategory('Cloud')">Cloud</a></li>
+            </ul>
+        </aside>
+    </div>
+
+    <script>
+        let allPosts = [];
+
+        async function fetchPosts() {
+            try {
+                const res = await fetch('/api/posts');
+                allPosts = await res.json();
+                renderPosts(allPosts);
+            } catch (err) {
+                document.getElementById('posts-list').innerHTML = '<p style="color:red">Không thể tải bài viết lúc này.</p>';
+            }
+        }
+
+        function filterCategory(category) {
+            if (!category) renderPosts(allPosts);
+            else renderPosts(allPosts.filter(p => p.category === category));
+        }
+
+        function renderPosts(posts) {
+            const container = document.getElementById('posts-list');
+            container.innerHTML = '';
+            
+            if (posts.length === 0) {
+                container.innerHTML = '<p>Chưa có bài viết nào.</p>';
+                return;
+            }
+
+            posts.forEach(post => {
+                const date = new Date(post.created_at).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
+                const pinnedIcon = post.is_pinned ? `<i class="fas fa-thumbtack post-pinned" title="Bài ghim"></i>` : '';
+                const seriesTag = post.series ? `<span class="tag-series"><i class="fas fa-layer-group"></i> ${post.series}</span>` : '';
+                
+                const html = `
+                    <article class="post-card reveal active">
+                        ${pinnedIcon}
+                        <div class="post-meta">
+                            <span class="tag-category">${post.category}</span>
+                            ${seriesTag}
+                            <span><i class="far fa-calendar-alt"></i> ${date}</span>
+                        </div>
+                        <h2 class="post-title"><a href="/post.html?id=${post.id}">${post.title}</a></h2>
+                        <a href="/post.html?id=${post.id}" class="btn-secondary" style="padding: 8px 20px; margin-top: 15px; display: inline-block;">Đọc tiếp &rarr;</a>
+                    </article>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchPosts);
+    </script>
+</body>
+</html>

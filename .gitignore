@@ -1,0 +1,8 @@
+node_modules/
+.env
+app.tar
+database.sqlite
+.DS_Store
+.agent/
+brain/
+logs/
