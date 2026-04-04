@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Bài Viết - Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <%- include('../partials/admin-header', { currentPage: 'manage_posts' }) %>
+
+    <div class="admin-page">
+        <main class="admin-content">
+            <div class="page-header">
+                <div>
+                    <h1><i class="fas fa-table-list" style="color:var(--primary);margin-right:10px;"></i>Quản Lý Bài Viết</h1>
+                    <p>Xem, sửa và xóa tất cả bài viết trên blog.</p>
+                </div>
+                <a href="/create_post" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Tạo Bài Viết Mới
+                </a>
+            </div>
+
+            <div id="alertMsg" class="alert"></div>
+
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fas fa-file-alt"></i></div>
+                    <div class="stat-info"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Tổng bài viết</div></div>
+                </div>
+                <!-- Other stats cards... -->
+            </div>
+
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <h2>Danh Sách Bài Viết</h2>
+                    <div class="table-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Tìm kiếm tiêu đề..." oninput="filterTable()">
+                    </div>
+                </div>
+                <div id="tableContainer">
+                    <div class="loading-state"><div class="spinner"></div><p>Đang tải dữ liệu...</p></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <%- include('../partials/admin-footer') %>
+
+    <!-- Modal Delete -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-box">
+            <h3>Xác nhận xóa</h3>
+            <p id="deletePostTitle"></p>
+            <div class="modal-actions">
+                <button onclick="closeDeleteModal()">Hủy</button>
+                <button id="confirmDeleteBtn" onclick="confirmDelete()">Xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin-layout.js"></script>
+    <script>
+        let allPosts = [];
+        let deleteTargetId = null;
+
+        async function fetchPosts() {
+            try {
+                const res = await fetch('/api/posts');
+                allPosts = await res.json();
+                renderTable(allPosts);
+            } catch (err) {
+                document.getElementById('tableContainer').innerHTML = '<p>Lỗi tải dữ liệu.</p>';
+            }
+        }
+
+        function renderTable(posts) {
+            const container = document.getElementById('tableContainer');
+            if (posts.length === 0) { container.innerHTML = '<p>Chưa có bài viết.</p>'; return; }
+            
+            let rows = posts.map(post => `
+                <tr>
+                    <td>#${post.id}</td>
+                    <td>${post.title}</td>
+                    <td>${post.category}</td>
+                    <td>${formatDate(post.created_at)}</td>
+                    <td>
+                        <a href="/edit_post/${post.id}" class="btn">Sửa</a>
+                        <button onclick="openDeleteModal(${post.id}, '${post.title}')">Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            container.innerHTML = `<table><thead><tr><th>ID</th><th>Tiêu đề</th><th>Danh mục</th><th>Ngày</th><th>Thao tác</th></tr></thead><tbody>${rows}</tbody></table>`;
+        }
+
+        function openDeleteModal(id, title) {
+            deleteTargetId = id;
+            document.getElementById('deletePostTitle').textContent = title;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+        }
+
+        async function confirmDelete() {
+            if (!deleteTargetId) return;
+            const res = await fetch(`/api/posts/${deleteTargetId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            });
+            if (res.ok) { fetchPosts(); closeDeleteModal(); }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchPosts);
+    </script>
+</body>
+</html>

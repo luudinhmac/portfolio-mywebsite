@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= post.title %> - Lưu Đình Mác</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Quill.js Theme CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .post-layout { max-width: 800px; margin: 120px auto 60px; padding: 0 20px; }
+        .post-header { margin-bottom: 40px; text-align: center; }
+        .post-title { font-size: 2.5rem; font-weight: 800; color: #1e293b; line-height: 1.3; margin-bottom: 20px; }
+        .post-meta { display: flex; justify-content: center; align-items: center; gap: 15px; font-size: 1rem; color: #64748b; }
+        .tag-category { background: #e0f2fe; color: #0284c7; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+        .post-body { font-size: 1.15rem; line-height: 1.8; color: #334155; margin-bottom: 60px; }
+        .post-body img { max-width: 100%; border-radius: 8px; margin: 20px 0; }
+        .comments-section { border-top: 1px solid #e2e8f0; padding-top: 40px; }
+        .comment-form { background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 40px; }
+    </style>
+</head>
+<body class="bg-color">
+
+    <%- include('../partials/header') %>
+
+    <div class="post-layout">
+        <article id="article">
+            <header class="post-header">
+                <div class="post-meta">
+                    <span class="tag-category"><%= post.category %></span>
+                    <% if (post.series) { %>
+                        <span><i class="fas fa-layer-group"></i> <%= post.series %></span>
+                    <% } %>
+                    <span><i class="far fa-calendar-alt"></i> <%= new Date(post.created_at).toLocaleDateString('vi-VN') %></span>
+                </div>
+                <h1 class="post-title"><%= post.title %></h1>
+            </header>
+            
+            <div class="post-body ql-editor">
+                <%- post.content %>
+            </div>
+        </article>
+        
+        <section class="comments-section">
+            <h3 class="comments-title">Bình Luận</h3>
+            
+            <div class="comment-form">
+                <form id="formComment">
+                    <input type="hidden" id="postId" value="<%= post.id %>">
+                    <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+                        <input type="text" id="cName" placeholder="Tên của bạn *" required style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                        <input type="email" id="cEmail" placeholder="Email *" required style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                    <textarea id="cBody" rows="4" placeholder="Nhập bình luận của bạn..." required style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px;"></textarea>
+                    <button type="submit" class="btn-primary" style="margin-top:15px; width: auto; padding: 10px 30px;">Gửi Bình Luận</button>
+                    <p id="cMsg" style="margin-top:10px; color: green; display:none;"></p>
+                </form>
+            </div>
+            
+            <div class="comment-list" id="commentList"></div>
+        </section>
+    </div>
+
+    <%- include('../partials/footer') %>
+
+    <script>
+        const postId = document.getElementById('postId').value;
+
+        async function loadComments() {
+            try {
+                const cRes = await fetch(`/api/comments/${postId}`);
+                const comments = await cRes.json();
+                const list = document.getElementById('commentList');
+                list.innerHTML = '';
+                
+                if (comments.length === 0) {
+                    list.innerHTML = '<p>Chưa có bình luận nào. Hãy là người đầu tiên!</p>';
+                    return;
+                }
+                
+                comments.forEach(c => {
+                    const cDate = new Date(c.created_at).toLocaleString('vi-VN');
+                    list.insertAdjacentHTML('beforeend', `
+                        <div style="background: white; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: #1e293b;">${c.author_name}</div>
+                            <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 15px;">${cDate}</div>
+                            <div style="color: #475569;">${c.content.replace(/</g, "&lt;")}</div>
+                        </div>
+                    `);
+                });
+            } catch(e) {}
+        }
+        
+        document.getElementById('formComment').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                post_id: parseInt(postId),
+                author_name: document.getElementById('cName').value,
+                author_email: document.getElementById('cEmail').value,
+                content: document.getElementById('cBody').value
+            };
+            
+            try {
+                await fetch('/api/comments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                e.target.reset();
+                loadComments();
+            } catch(err) {}
+        });
+
+        document.addEventListener('DOMContentLoaded', loadComments);
+    </script>
+</body>
+</html>

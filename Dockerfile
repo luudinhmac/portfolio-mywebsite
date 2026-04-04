@@ -1,19 +1,29 @@
-FROM node:18-alpine
+# Stage 1: Build
+FROM node:18-alpine AS builder
 
-# Set working directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+RUN npm install --frozen-lockfile
+
+# Stage 2: Production
+FROM node:18-alpine
+
+WORKDIR /usr/src/app
+
+# Copy dependencies from builder
+COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY package*.json ./
 
-RUN npm install
-
-# Bundle app source
+# Copy app source
 COPY . .
 
-# Expose the application port
+# Set permissions for node user
+RUN chown -R node:node /usr/src/app
+
+# Use non-root user
+USER node
+
 EXPOSE 3000
 
-# Start the application
 CMD [ "node", "server.js" ]

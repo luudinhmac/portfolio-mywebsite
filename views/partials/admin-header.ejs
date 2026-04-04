@@ -8,14 +8,14 @@
             </div>
         </a>
         <ul class="nav-links">
-            <li>
-                <a href="/manage_posts" data-path="/manage_posts">
+            <li class="<%= currentPage === 'manage_posts' ? 'active' : '' %>">
+                <a href="/manage_posts">
                     <i class="fas fa-table-list"></i>
                     <span>Quản Lý Bài Viết</span>
                 </a>
             </li>
-            <li>
-                <a href="/create_post" data-path="/create_post">
+            <li class="<%= currentPage === 'create_post' ? 'active' : '' %>">
+                <a href="/create_post">
                     <i class="fas fa-plus-circle"></i>
                     <span>Tạo Bài Viết</span>
                 </a>

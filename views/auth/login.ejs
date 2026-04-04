@@ -6,107 +6,26 @@
     <title>Hệ Thống - Đăng Nhập</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <style>
-        body {
-            background-color: #f1f5f9;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-        }
-        .login-card {
-            background: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        .login-card img {
-            width: 80px;
-            height: 80px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        .login-card h2 {
-            margin-top: 0;
-            color: #1e293b;
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #475569;
-            font-size: 0.9rem;
-        }
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s;
-            box-sizing: border-box;
-        }
-        .form-control:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-        }
-        .btn-submit {
-            background: #2563eb;
-            color: #fff;
-            border: none;
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 10px;
-        }
-        .btn-submit:hover {
-            background: #1d4ed8;
-        }
-        .alert {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-        .back-link {
-            display: block;
-            margin-top: 25px;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        .back-link:hover {
-            color: #2563eb;
-        }
+        body { background-color: #f1f5f9; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .login-card { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
+        .login-card img { width: 80px; height: 80px; border-radius: 12px; margin-bottom: 20px; }
+        .login-card h2 { margin-top: 0; color: #1e293b; font-size: 1.5rem; margin-bottom: 30px; }
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #475569; font-size: 0.9rem; }
+        .form-control { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; font-family: 'Inter', sans-serif; transition: all 0.3s; box-sizing: border-box; }
+        .form-control:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .btn-submit { background: #2563eb; color: #fff; border: none; width: 100%; padding: 12px; border-radius: 8px; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
+        .btn-submit:hover { background: #1d4ed8; }
+        .alert { padding: 12px; border-radius: 8px; margin-bottom: 20px; display: none; font-weight: 500; font-size: 0.9rem; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .back-link { display: block; margin-top: 25px; color: #64748b; text-decoration: none; font-size: 0.9rem; }
     </style>
 </head>
 <body>
     <div class="login-card">
-        <a href="/"><img src="images/zero2ops.jpg" alt="Logo"></a>
+        <a href="/"><img src="/images/zero2ops.jpg" alt="Logo"></a>
         <h2>Đăng Nhập Quản Trị</h2>
         
         <div id="alertMsg" class="alert alert-error"></div>
@@ -127,7 +46,6 @@
     </div>
 
     <script>
-        // Check if already logged in
         if (localStorage.getItem('token')) {
             window.location.href = '/manage_posts';
         }
@@ -151,9 +69,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-                
                 const data = await res.json();
-                
                 if (res.ok && data.token) {
                     localStorage.setItem('token', data.token);
                     window.location.href = '/manage_posts';

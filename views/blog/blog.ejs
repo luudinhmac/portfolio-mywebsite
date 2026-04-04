@@ -9,7 +9,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <style>
         .blog-header { background: #1e293b; color: white; padding: 120px 20px 60px; text-align: center; }
         .blog-header h1 { font-size: 3rem; margin-bottom: 15px; }
@@ -46,17 +46,7 @@
 </head>
 <body class="bg-light">
 
-    <!-- Navbar -->
-    <nav class="navbar scanned" id="navbar">
-        <div class="nav-container">
-            <a href="/" class="nav-brand"><img src="images/zero2ops.jpg" alt="Zero2Ops Logo" class="nav-logo"></a>
-            <ul class="nav-links">
-                <li><a href="/">Trang chủ</a></li>
-                <li><a href="/blog" class="active">Blog</a></li>
-                <li><a href="sys-login" title="Đăng nhập Quản trị"><i class="fas fa-user-shield"></i></a></li>
-            </ul>
-        </div>
-    </nav>
+    <%- include('../partials/header') %>
 
     <!-- Header -->
     <header class="blog-header">
@@ -67,7 +57,26 @@
     <div class="blog-container">
         <!-- Main Content (Posts) -->
         <main id="posts-list">
-            <div style="text-align: center; color: #64748b;"><i class="fas fa-spinner fa-spin fa-2x"></i><br>Đang tải bài viết...</div>
+            <% if (posts.length === 0) { %>
+                <p>Chưa có bài viết nào.</p>
+            <% } else { %>
+                <% posts.forEach(post => { %>
+                    <article class="post-card" data-category="<%= post.category %>">
+                        <% if (post.is_pinned) { %>
+                            <i class="fas fa-thumbtack post-pinned" title="Bài ghim"></i>
+                        <% } %>
+                        <div class="post-meta">
+                            <span class="tag-category"><%= post.category %></span>
+                            <% if (post.series) { %>
+                                <span class="tag-series"><i class="fas fa-layer-group"></i> <%= post.series %></span>
+                            <% } %>
+                            <span><i class="far fa-calendar-alt"></i> <%= new Date(post.created_at).toLocaleDateString('vi-VN') %></span>
+                        </div>
+                        <h2 class="post-title"><a href="/post/<%= post.id %>"><%= post.title %></a></h2>
+                        <a href="/post/<%= post.id %>" class="btn-secondary" style="padding: 8px 20px; margin-top: 15px; display: inline-block;">Đọc tiếp &rarr;</a>
+                    </article>
+                <% }) %>
+            <% } %>
         </main>
         
         <!-- Sidebar -->
@@ -84,55 +93,19 @@
         </aside>
     </div>
 
+    <%- include('../partials/footer') %>
+
     <script>
-        let allPosts = [];
-
-        async function fetchPosts() {
-            try {
-                const res = await fetch('/api/posts');
-                allPosts = await res.json();
-                renderPosts(allPosts);
-            } catch (err) {
-                document.getElementById('posts-list').innerHTML = '<p style="color:red">Không thể tải bài viết lúc này.</p>';
-            }
-        }
-
         function filterCategory(category) {
-            if (!category) renderPosts(allPosts);
-            else renderPosts(allPosts.filter(p => p.category === category));
-        }
-
-        function renderPosts(posts) {
-            const container = document.getElementById('posts-list');
-            container.innerHTML = '';
-            
-            if (posts.length === 0) {
-                container.innerHTML = '<p>Chưa có bài viết nào.</p>';
-                return;
-            }
-
-            posts.forEach(post => {
-                const date = new Date(post.created_at).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
-                const pinnedIcon = post.is_pinned ? `<i class="fas fa-thumbtack post-pinned" title="Bài ghim"></i>` : '';
-                const seriesTag = post.series ? `<span class="tag-series"><i class="fas fa-layer-group"></i> ${post.series}</span>` : '';
-                
-                const html = `
-                    <article class="post-card reveal active">
-                        ${pinnedIcon}
-                        <div class="post-meta">
-                            <span class="tag-category">${post.category}</span>
-                            ${seriesTag}
-                            <span><i class="far fa-calendar-alt"></i> ${date}</span>
-                        </div>
-                        <h2 class="post-title"><a href="/post?id=${post.id}">${post.title}</a></h2>
-                        <a href="/post?id=${post.id}" class="btn-secondary" style="padding: 8px 20px; margin-top: 15px; display: inline-block;">Đọc tiếp &rarr;</a>
-                    </article>
-                `;
-                container.insertAdjacentHTML('beforeend', html);
+            const cards = document.querySelectorAll('.post-card');
+            cards.forEach(card => {
+                if (!category || card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
             });
         }
-
-        document.addEventListener('DOMContentLoaded', fetchPosts);
     </script>
 </body>
 </html>
