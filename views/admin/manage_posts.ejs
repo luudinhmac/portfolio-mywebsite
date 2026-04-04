@@ -31,7 +31,18 @@
                     <div class="stat-icon blue"><i class="fas fa-file-alt"></i></div>
                     <div class="stat-info"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Tổng bài viết</div></div>
                 </div>
-                <!-- Other stats cards... -->
+                <div class="stat-card">
+                    <div class="stat-icon yellow"><i class="fas fa-thumbtack"></i></div>
+                    <div class="stat-info"><div class="stat-value" id="stat-pinned">—</div><div class="stat-label">Bài ghim</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-layer-group"></i></div>
+                    <div class="stat-info"><div class="stat-value" id="stat-cats">—</div><div class="stat-label">Danh mục</div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i class="fas fa-calendar-week"></i></div>
+                    <div class="stat-info"><div class="stat-value" id="stat-recent">—</div><div class="stat-label">Trong 7 ngày qua</div></div>
+                </div>
             </div>
 
             <div class="table-card">
@@ -54,11 +65,21 @@
     <!-- Modal Delete -->
     <div class="modal-overlay" id="deleteModal">
         <div class="modal-box">
-            <h3>Xác nhận xóa</h3>
-            <p id="deletePostTitle"></p>
+            <div class="modal-icon"><i class="fas fa-trash-alt"></i></div>
+            <h3>Xác nhận xóa bài viết</h3>
+            <p>Bạn có chắc muốn xóa bài viết:<br>
+                <strong id="deletePostTitle" style="color:var(--dark);display:block;margin-top:8px;"></strong>
+            </p>
+            <p style="margin-top:8px;color:#ef4444;font-size:.85rem;">
+                <i class="fas fa-exclamation-triangle"></i> Hành động này không thể hoàn tác!
+            </p>
             <div class="modal-actions">
-                <button onclick="closeDeleteModal()">Hủy</button>
-                <button id="confirmDeleteBtn" onclick="confirmDelete()">Xóa</button>
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i> Hủy bỏ
+                </button>
+                <button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDelete()">
+                    <i class="fas fa-trash-alt"></i> Xóa ngay
+                </button>
             </div>
         </div>
     </div>
@@ -68,34 +89,109 @@
         let allPosts = [];
         let deleteTargetId = null;
 
+        const categoryColors = {
+            'System': 'badge-blue',
+            'DevOps': 'badge-green',
+            'VMware': 'badge-purple',
+            'Linux':  'badge-yellow',
+            'Cloud':  'badge-blue',
+            'Khác':   'badge-gray'
+        };
+
+        // Escape HTML helper
+        function escapeHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
         async function fetchPosts() {
             try {
                 const res = await fetch('/api/posts');
+                if (!res.ok) throw new Error('API error');
                 allPosts = await res.json();
+                renderStats(allPosts);
                 renderTable(allPosts);
             } catch (err) {
-                document.getElementById('tableContainer').innerHTML = '<p>Lỗi tải dữ liệu.</p>';
+                document.getElementById('tableContainer').innerHTML =
+                    `<div class="empty-state"><i class="fas fa-wifi-slash"></i><p>Không thể tải dữ liệu. Vui lòng thử lại.</p></div>`;
             }
+        }
+
+        function renderStats(posts) {
+            document.getElementById('stat-total').textContent = posts.length;
+            document.getElementById('stat-pinned').textContent = posts.filter(p => p.is_pinned).length;
+            const cats = new Set(posts.map(p => p.category).filter(Boolean));
+            document.getElementById('stat-cats').textContent = cats.size;
+            const weekAgo = new Date(Date.now() - 7 * 86400000);
+            document.getElementById('stat-recent').textContent = posts.filter(p => new Date(p.created_at) > weekAgo).length;
         }
 
         function renderTable(posts) {
             const container = document.getElementById('tableContainer');
-            if (posts.length === 0) { container.innerHTML = '<p>Chưa có bài viết.</p>'; return; }
-            
-            let rows = posts.map(post => `
-                <tr>
-                    <td>#${post.id}</td>
-                    <td>${post.title}</td>
-                    <td>${post.category}</td>
-                    <td>${formatDate(post.created_at)}</td>
-                    <td>
-                        <a href="/edit_post/${post.id}" class="btn">Sửa</a>
-                        <button onclick="openDeleteModal(${post.id}, '${post.title}')">Xóa</button>
+
+            if (posts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>Chưa có bài viết nào.</p>
+                        <a href="/create_post" class="btn btn-primary" style="margin-top:16px;">
+                            <i class="fas fa-plus"></i> Tạo bài viết đầu tiên
+                        </a>
+                    </div>`;
+                return;
+            }
+
+            const rows = posts.map(post => {
+                const date = formatDate(post.created_at);
+                const catClass = categoryColors[post.category] || 'badge-gray';
+                const pinIcon = post.is_pinned
+                    ? `<i class="fas fa-thumbtack pin-icon" title="Đang ghim"></i>`
+                    : `<span style="color:#cbd5e1">—</span>`;
+
+                return `
+                <tr data-id="${post.id}">
+                    <td style="color:var(--text-muted); font-weight:600; width:60px;">#${post.id}</td>
+                    <td class="post-title-cell">
+                        <a href="/post/${post.id}" target="_blank">${escapeHtml(post.title)}</a>
                     </td>
-                </tr>
-            `).join('');
-            
-            container.innerHTML = `<table><thead><tr><th>ID</th><th>Tiêu đề</th><th>Danh mục</th><th>Ngày</th><th>Thao tác</th></tr></thead><tbody>${rows}</tbody></table>`;
+                    <td><span class="badge ${catClass}">${post.category || '—'}</span></td>
+                    <td style="color:var(--text-muted); white-space:nowrap;">
+                        <i class="far fa-calendar-alt" style="margin-right:5px;"></i>${date}
+                    </td>
+                    <td style="text-align:center;">${pinIcon}</td>
+                    <td style="white-space:nowrap;">
+                        <a href="/edit_post/${post.id}" class="btn btn-sm btn-primary btn-icon" title="Sửa bài">
+                            <i class="fas fa-pen"></i> Sửa
+                        </a>
+                        <button onclick="openDeleteModal(${post.id}, '${escapeHtml(post.title).replace(/'/g, "\\'")}' )"
+                            class="btn btn-sm btn-danger btn-icon" title="Xóa bài" style="margin-left:6px;">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+
+            container.innerHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tiêu Đề</th>
+                            <th>Danh Mục</th>
+                            <th>Ngày Đăng</th>
+                            <th style="text-align:center;">Ghim</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">${rows}</tbody>
+                </table>`;
+        }
+
+        function filterTable() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = q
+                ? allPosts.filter(p => p.title.toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q))
+                : allPosts;
+            renderTable(filtered);
         }
 
         function openDeleteModal(id, title) {
@@ -105,16 +201,35 @@
         }
 
         function closeDeleteModal() {
+            deleteTargetId = null;
             document.getElementById('deleteModal').classList.remove('show');
         }
 
         async function confirmDelete() {
             if (!deleteTargetId) return;
-            const res = await fetch(`/api/posts/${deleteTargetId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${getToken()}` }
-            });
-            if (res.ok) { fetchPosts(); closeDeleteModal(); }
+            const btn = document.getElementById('confirmDeleteBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+
+            try {
+                const res = await fetch(`/api/posts/${deleteTargetId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (res.ok) { 
+                    allPosts = allPosts.filter(p => p.id !== deleteTargetId);
+                    renderStats(allPosts);
+                    renderTable(allPosts);
+                    closeDeleteModal();
+                } else {
+                    alert("Có lỗi xảy ra khi xóa bài.");
+                }
+            } catch (err) {
+                alert("Không thể kết nối đến máy chủ.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-trash-alt"></i> Xóa ngay';
+            }
         }
 
         document.addEventListener('DOMContentLoaded', fetchPosts);
