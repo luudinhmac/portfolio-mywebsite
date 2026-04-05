@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Danh Mục - Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <%- include('../partials/admin-header', { currentPage: 'manage_categories' }) %>
+
+    <div class="admin-page">
+        <main class="admin-content">
+            <div class="page-header">
+                <div>
+                    <h1><i class="fas fa-tags" style="color:var(--primary);margin-right:10px;"></i>Quản Lý Danh Mục</h1>
+                    <p>Thêm, sửa, xóa các danh mục cho bài viết blog.</p>
+                </div>
+            </div>
+
+            <div id="alertMsg" class="alert"></div>
+
+            <div style="display: flex; gap: 30px; align-items: flex-start;">
+                <!-- Form Add -->
+                <div class="form-card" style="flex: 1;">
+                    <h3>Thêm Danh Mục Mới</h3>
+                    <form id="catForm" style="margin-top: 20px;">
+                        <input type="hidden" id="editCatId" value="">
+                        <div class="form-group">
+                            <label>Tên Danh Mục</label>
+                            <input type="text" id="catName" class="form-control" required placeholder="Nhập tên...">
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="saveCatBtn" style="margin-top: 10px;">
+                            <i class="fas fa-save"></i> Thêm Danh Mục
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelEditBtn" style="margin-top: 10px; display: none;" onclick="cancelEdit()">
+                            Hủy Sửa
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Table -->
+                <div class="table-card" style="flex: 2;">
+                    <div class="table-toolbar">
+                        <h2>Danh Sách Danh Mục</h2>
+                    </div>
+                    <div id="tableContainer">
+                        <div class="loading-state"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <%- include('../partials/admin-footer') %>
+    <script src="/js/admin-layout.js"></script>
+    <script>
+        async function fetchCategories() {
+            try {
+                const res = await fetch('/api/categories');
+                const data = await res.json();
+                renderTable(data);
+            } catch (err) {
+                document.getElementById('tableContainer').innerHTML = '<p>Lỗi tải danh mục.</p>';
+            }
+        }
+
+        function renderTable(cats) {
+            const container = document.getElementById('tableContainer');
+            if (cats.length === 0) {
+                container.innerHTML = `<div class="empty-state"><p>Chưa có danh mục nào.</p></div>`;
+                return;
+            }
+
+            const rows = cats.map(c => `
+                <tr>
+                    <td style="font-weight: 600;">${c.name}</td>
+                    <td style="color:var(--text-muted);">${formatDate(c.created_at)}</td>
+                    <td style="display: flex; gap: 8px;">
+                        <button onclick="editCat(${c.id}, '${c.name.replace(/'/g, "\\'")}')" class="btn btn-sm btn-secondary btn-icon"><i class="fas fa-pen"></i> Sửa</button>
+                        <button onclick="deleteCat(${c.id})" class="btn btn-sm btn-danger btn-icon"><i class="fas fa-trash"></i> Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            container.innerHTML = `
+                <table class="data-table">
+                    <thead><tr><th>Tên Danh Mục</th><th>Ngày Tạo</th><th>Thao Tác</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            `;
+        }
+
+        document.getElementById('catForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('editCatId').value;
+            const name = document.getElementById('catName').value;
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/categories/${id}` : '/api/categories';
+            
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+                    body: JSON.stringify({ name })
+                });
+                
+                if (res.ok) {
+                    cancelEdit();
+                    fetchCategories();
+                    showAlert('alertMsg', 'Đã lưu danh mục thành công', 'success');
+                } else {
+                    const d = await res.json();
+                    showAlert('alertMsg', d.error, 'error');
+                }
+            } catch(e) {
+                showAlert('alertMsg', 'Lỗi kết nối', 'error');
+            }
+        });
+
+        function editCat(id, name) {
+            document.getElementById('editCatId').value = id;
+            document.getElementById('catName').value = name;
+            document.getElementById('saveCatBtn').innerHTML = '<i class="fas fa-save"></i> Cập Nhật';
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+        }
+
+        function cancelEdit() {
+            document.getElementById('editCatId').value = '';
+            document.getElementById('catName').value = '';
+            document.getElementById('saveCatBtn').innerHTML = '<i class="fas fa-plus"></i> Thêm Danh Mục';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        }
+
+        async function deleteCat(id) {
+            if(!confirm('Chắc chắn muốn xóa danh mục này?')) return;
+            try {
+                await fetch(`/api/categories/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                fetchCategories();
+            } catch(e) {
+                alert('Lỗi khi xóa!');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchCategories);
+    </script>
+</body>
+</html>
