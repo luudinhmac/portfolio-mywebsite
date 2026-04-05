@@ -189,7 +189,7 @@
                     submitBtn.innerHTML = originalBtnContent;
                 }
             } catch (err) {
-                showModalAlert("Không thể kết nối tới máy chủ. Vui lòng thử lại sau.");
+                showModalAlert("Lỗi kết nối máy chủ: " + err.message);
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnContent;
             }

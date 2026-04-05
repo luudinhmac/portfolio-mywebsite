@@ -47,12 +47,14 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Middleware
-const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000', 'http://localhost:3001'];
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000'];
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        // In development, we can be more permissive or log the blocked origin
+        if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
             callback(null, true);
         } else {
+            console.error('CORS Error: Origin not allowed:', origin);
             callback(new Error('Not allowed by CORS'));
         }
     }
