@@ -75,6 +75,11 @@ Yêu cầu: Node.js >= 18.x, MySQL/MariaDB.
     ```
 2.  **Cấu hình Remote DB**: Đảm bảo khai báo đúng IP Server MariaDB trong `.env`.
 
+### ⚠️ Lưu ý khi chạy phía sau Nginx
+Nếu hệ thống chạy sau Nginx hoặc Load Balancer (trong Docker), bạn cần:
+-   **Trust Proxy**: Đã được cấu hình tự động trong `server.js` (`app.set('trust proxy', 1)`) để nhận diện đúng IP người dùng.
+-   **ALLOWED_ORIGINS**: Cấu hình biến môi trường `ALLOWED_ORIGINS` trong `.env` để chỉ định các domain được phép truy cập (VD: `https://yourdomain.com`).
+
 ---
 
 ## 📂 Cấu Trúc Thư Mục
