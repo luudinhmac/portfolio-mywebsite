@@ -27,8 +27,23 @@ const uploadAvatar = multer({
     limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
 
+const passport = require('passport');
+
 // Auth
 router.post('/login', authController.login);
+
+// Social Auth Routes
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/auth/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/sys-login?error=auth_failed' }),
+    authController.socialCallback
+);
+
+router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
+router.get('/auth/facebook/callback', 
+    passport.authenticate('facebook', { failureRedirect: '/sys-login?error=auth_failed' }),
+    authController.socialCallback
+);
 
 // Posts
 router.get('/posts', verifyToken, postController.getAllPosts);

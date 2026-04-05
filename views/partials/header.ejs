@@ -65,7 +65,12 @@
             const pf = document.getElementById('userProfileHeader');
             if (pf) {
                 pf.style.display = 'inline-block';
-                if(user.avatar) document.getElementById('headerAvatarImg').src = user.avatar;
+                const avatarImg = document.getElementById('headerAvatarImg');
+                if (user.avatar && user.avatar.trim() !== "") {
+                    avatarImg.src = user.avatar;
+                } else {
+                    avatarImg.src = '/img/default-avatar.png'; // Silhouette fallback
+                }
             }
             
             // Mobile menu logic
@@ -73,7 +78,12 @@
             const mp = document.getElementById('mobileProfile');
             if (mp) {
                 mp.style.display = 'block';
-                if(user.avatar) document.getElementById('mobileAvatarImg').src = user.avatar;
+                const mobAvatar = document.getElementById('mobileAvatarImg');
+                if (user.avatar && user.avatar.trim() !== "") {
+                    mobAvatar.src = user.avatar;
+                } else {
+                    mobAvatar.src = '/img/default-avatar.png';
+                }
             }
         }
     });

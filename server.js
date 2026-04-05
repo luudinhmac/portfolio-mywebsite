@@ -4,6 +4,8 @@ const cors = require('cors');
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const session = require('express-session');
+const passport = require('./src/config/passport');
 const { pool } = require('./src/config/db');
 const { initDB } = require('./src/config/initDB');
 const apiRoutes = require('./src/routes/apiRoutes');
@@ -14,8 +16,18 @@ const PORT = process.env.PORT || 3000;
 
 // Security Middleware
 app.use(helmet({
-    contentSecurityPolicy: false, // Set to false to avoid breaking inline scripts for now
+    contentSecurityPolicy: false, 
 }));
+
+// Session (Needed for Passport)
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'portfolio_session_secret',
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Rate Limiting
 const limiter = rateLimit({

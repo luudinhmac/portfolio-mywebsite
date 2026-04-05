@@ -78,6 +78,13 @@ router.get('/sys-login', (req, res) => {
     res.render('auth/login');
 });
 
+router.get('/auth-success', (req, res) => {
+    res.render('auth/auth_success', { 
+        token: req.query.token, 
+        user: req.query.user 
+    });
+});
+
 // Admin Dashboard
 router.get('/manage_posts', (req, res) => {
     res.render('admin/manage_posts');

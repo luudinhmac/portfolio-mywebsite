@@ -80,6 +80,9 @@ async function initDB() {
         await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS phone VARCHAR(20)`);
         await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS birthday VARCHAR(50)`);
         await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS address TEXT`);
+        await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id VARCHAR(255) UNIQUE`);
+        await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS facebook_id VARCHAR(255) UNIQUE`);
+        await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS apple_id VARCHAR(255) UNIQUE`);
 
         await pool.query(`ALTER TABLE posts ADD COLUMN IF NOT EXISTS views INT DEFAULT 0`);
         await pool.query(`ALTER TABLE posts ADD COLUMN IF NOT EXISTS likes INT DEFAULT 0`);

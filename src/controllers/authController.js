@@ -41,4 +41,28 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { login };
+const socialCallback = (req, res) => {
+    if (!req.user) {
+        return res.redirect('/sys-login?error=auth_failed');
+    }
+    
+    // Generate JWT
+    const token = jwt.sign(
+        { id: req.user.id, username: req.user.username, role: req.user.role }, 
+        process.env.JWT_SECRET || 'fallback_secret_key', 
+        { expiresIn: '8h' }
+    );
+    
+    // Pass user info and token via URL parameters (to be handled by /auth-success view)
+    const userData = encodeURIComponent(JSON.stringify({
+        id: req.user.id,
+        username: req.user.username,
+        fullname: req.user.fullname,
+        avatar: req.user.avatar,
+        role: req.user.role
+    }));
+    
+    res.redirect(`/auth-success?token=${token}&user=${userData}`);
+};
+
+module.exports = { login, socialCallback };

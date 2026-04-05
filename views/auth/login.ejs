@@ -41,9 +41,34 @@
             </div>
             <button type="submit" class="btn-submit"><i class="fas fa-sign-in-alt"></i> Đăng nhập</button>
         </form>
+
+        <div class="social-divider">
+            <span>Hoặc đăng nhập bằng</span>
+        </div>
+
+        <div class="social-buttons">
+            <a href="/api/auth/google" class="btn-social btn-google">
+                <i class="fab fa-google"></i> Google
+            </a>
+            <a href="/api/auth/facebook" class="btn-social btn-facebook">
+                <i class="fab fa-facebook-f"></i> Facebook
+            </a>
+        </div>
         
         <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Quay lại trang chủ</a>
     </div>
+
+    <style>
+        .social-divider { margin: 25px 0; position: relative; text-align: center; }
+        .social-divider:before { content: ""; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px solid #e2e8f0; }
+        .social-divider span { position: relative; background: #fff; padding: 0 15px; color: #64748b; font-size: 0.85rem; }
+        .social-buttons { display: flex; gap: 12px; margin-top: 15px; }
+        .btn-social { flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; }
+        .btn-google { background: #fff; color: #1e293b; border: 1px solid #e2e8f0; }
+        .btn-google:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .btn-facebook { background: #1877f2; color: #fff; border: none; }
+        .btn-facebook:hover { background: #166fe5; }
+    </style>
 
     <script>
         if (localStorage.getItem('token')) {
