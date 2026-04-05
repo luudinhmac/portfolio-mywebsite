@@ -43,6 +43,62 @@
         <li><a href="/#skills">Kỹ năng</a></li>
         <li><a href="/#experience">Kinh nghiệm</a></li>
         <li><a href="/#projects">Dự án</a></li>
-        <li><a href="/#contact">Liên hệ</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li id="mobileLogin"><a href="/sys-login">Đăng nhập</a></li>
+        <li id="mobileProfile" style="display: none;">
+            <a href="/portal-dashboard" style="display: flex; align-items: center; gap: 10px;">
+                <img id="mobileAvatarImg" src="/img/default-avatar.png" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #2563eb;">
+                Hồ sơ
+            </a>
+        </li>
     </ul>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        
+        // Header logic
+        if (token && user) {
+            document.getElementById('loginLink').style.display = 'none';
+            const pf = document.getElementById('userProfileHeader');
+            if (pf) {
+                pf.style.display = 'inline-block';
+                if(user.avatar) document.getElementById('headerAvatarImg').src = user.avatar;
+            }
+            
+            // Mobile menu logic
+            document.getElementById('mobileLogin').style.display = 'none';
+            const mp = document.getElementById('mobileProfile');
+            if (mp) {
+                mp.style.display = 'block';
+                if(user.avatar) document.getElementById('mobileAvatarImg').src = user.avatar;
+            }
+        }
+    });
+
+    // Toggle menu
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const closeMenu = document.querySelector('.mobile-menu-close');
+
+    if(menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+        });
+    }
+
+    if(closeMenu && mobileMenu) {
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+    }
+
+    // Close on link click
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+    });
+</script>
