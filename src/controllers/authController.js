@@ -21,7 +21,17 @@ const login = async (req, res) => {
                 process.env.JWT_SECRET || 'fallback_secret_key', 
                 { expiresIn: '8h' }
             );
-            res.json({ success: true, token });
+            res.json({ 
+                success: true, 
+                token,
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    fullname: user.fullname,
+                    avatar: user.avatar,
+                    role: user.role
+                }
+            });
         } else {
             res.status(401).json({ error: 'Tên đăng nhập hoặc mật khẩu không chính xác' });
         }

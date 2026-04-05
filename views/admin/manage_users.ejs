@@ -89,9 +89,12 @@
                 const roleBadge = u.role === 'admin' 
                     ? '<span class="badge badge-purple">Admin</span>' 
                     : `<span class="badge badge-blue">${u.role}</span>`;
+                
+                const avatarImg = u.avatar || '/img/default-avatar.png';
 
                 return `
                 <tr>
+                    <td><img src="${avatarImg}" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:1px solid #e2e8f0;"></td>
                     <td style="color:var(--text-muted); font-weight:600; width:60px;">#${u.id}</td>
                     <td style="font-weight:600;">${escapeHtml(u.username)}</td>
                     <td>${u.email ? escapeHtml(u.email) : '—'}</td>
@@ -101,10 +104,16 @@
                         <a href="/edit_user/${u.id}" class="btn btn-sm btn-secondary btn-icon" title="Đổi mật khẩu">
                             <i class="fas fa-key"></i> Đổi Pass
                         </a>
-                        <button onclick="openDeleteModal(${u.id}, '${escapeHtml(u.username)}')"
-                            class="btn btn-sm btn-danger btn-icon" title="Xóa tài khoản" style="margin-left:6px;">
-                            <i class="fas fa-trash"></i> Xóa
-                        </button>
+                        ${
+                            // Hide delete if self OR if last admin
+                            (window.currentUser && window.currentUser.id === u.id) || 
+                            (u.role === 'admin' && users.filter(usr => usr.role === 'admin').length === 1)
+                            ? '' : `
+                            <button onclick="openDeleteModal(${u.id}, '${escapeHtml(u.username)}')"
+                                class="btn btn-sm btn-danger btn-icon" title="Xóa tài khoản" style="margin-left:6px;">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        `}
                     </td>
                 </tr>`;
             }).join('');
@@ -113,6 +122,7 @@
                 <table class="data-table">
                     <thead>
                         <tr>
+                            <th>Avatar</th>
                             <th>ID</th>
                             <th>Tên Đăng Nhập</th>
                             <th>Email</th>

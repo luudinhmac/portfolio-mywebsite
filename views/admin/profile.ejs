@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sửa Thông Tin User - Admin</title>
+    <title>Hồ Sơ Của Tôi - Admin</title>
     <meta name="robots" content="noindex, nofollow">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,20 +15,18 @@
     </style>
 </head>
 <body>
-    <%- include('../partials/admin-header', { currentPage: 'manage_users' }) %>
+    <%- include('../partials/admin-header', { currentPage: 'profile' }) %>
 
     <div class="admin-page">
         <main class="admin-content">
             <div class="page-header">
                 <div>
-                    <h1><i class="fas fa-user-edit" style="color:var(--primary);margin-right:10px;"></i>Sửa Thành Viên</h1>
-                    <p>Admin sửa thông tin hoặc đặt lại mật khẩu cho thành viên.</p>
+                    <h1><i class="fas fa-user-circle" style="color:var(--primary);margin-right:10px;"></i>Hồ Sơ Của Tôi</h1>
+                    <p>Quản lý thông tin bảo mật và cá nhân.</p>
                 </div>
-                <a href="/manage_users" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay Lại</a>
             </div>
 
             <div id="alertMsg" class="alert"></div>
-            <input type="hidden" id="userId" value="<%= userId %>">
 
             <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
                 <!-- Profile Edit -->
@@ -75,13 +73,17 @@
 
                 <!-- Password Reset -->
                 <div class="form-card" style="flex: 1; min-width: 350px;">
-                    <h3>Đặt Lại Mật Khẩu</h3>
-                    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px;">Admin không cần mật khẩu cũ để đổi.</p>
-                    <form id="passForm">
+                    <h3>Đổi Mật Khẩu</h3>
+                    <form id="passForm" style="margin-top:20px;">
                         <div class="form-group input-group">
-                            <label>Mật Khẩu Mới</label>
+                            <label>Mật Khẩu Hiện Tại <span class="required">*</span></label>
+                            <input type="password" id="old_password" class="form-control" required>
+                            <i class="far fa-eye toggle-password" id="tOldPass"></i>
+                        </div>
+                        <div class="form-group input-group">
+                            <label>Mật Khẩu Mới <span class="required">*</span></label>
                             <input type="password" id="new_password" class="form-control" required>
-                            <i class="far fa-eye toggle-password" id="tPass"></i>
+                            <i class="far fa-eye toggle-password" id="tNewPass"></i>
                         </div>
                         <button type="submit" class="btn btn-warning" id="btnPass"><i class="fas fa-key"></i> Đổi Mật Khẩu</button>
                     </form>
@@ -93,20 +95,23 @@
     <%- include('../partials/admin-footer') %>
     <script src="/js/admin-layout.js"></script>
     <script>
-        const userId = document.getElementById('userId').value;
+        document.getElementById('tOldPass').addEventListener('click', function() {
+            const input = document.getElementById('old_password');
+            if(input.type === 'password'){ input.type = 'text'; this.classList.replace('fa-eye', 'fa-eye-slash'); }
+            else { input.type = 'password'; this.classList.replace('fa-eye-slash', 'fa-eye'); }
+        });
 
-        document.getElementById('tPass').addEventListener('click', function() {
+        document.getElementById('tNewPass').addEventListener('click', function() {
             const input = document.getElementById('new_password');
             if(input.type === 'password'){ input.type = 'text'; this.classList.replace('fa-eye', 'fa-eye-slash'); }
             else { input.type = 'password'; this.classList.replace('fa-eye-slash', 'fa-eye'); }
         });
 
-        // Load data initially
         async function loadData() {
             try {
                 const res = await fetch('/api/users', { headers: { 'Authorization': `Bearer ${getToken()}` }});
                 const users = await res.json();
-                const u = users.find(x => x.id == userId);
+                const u = users.find(x => x.id === window.currentUser.id);
                 if(u) {
                     document.getElementById('fullname').value = u.fullname || '';
                     document.getElementById('email').value = u.email || '';
@@ -163,7 +168,7 @@
                     }
                 }
 
-                const res = await fetch(`/api/users/${userId}/profile`, {
+                const res = await fetch(`/api/users/${window.currentUser.id}/profile`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
                     body: JSON.stringify({
@@ -185,14 +190,17 @@
         document.getElementById('passForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             try {
-                const res = await fetch(`/api/users/${userId}/password`, {
+                const res = await fetch(`/api/users/${window.currentUser.id}/password`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
-                    body: JSON.stringify({ new_password: document.getElementById('new_password').value })
+                    body: JSON.stringify({ 
+                        old_password: document.getElementById('old_password').value,
+                        new_password: document.getElementById('new_password').value 
+                    })
                 });
                 if(res.ok) {
                     document.getElementById('passForm').reset();
-                    showAlert('alertMsg', 'Đã đổi mật khẩu!', 'success');
+                    showAlert('alertMsg', 'Đã đổi mật khẩu thành công!', 'success');
                 } else { const d = await res.json(); showAlert('alertMsg', d.error, 'error'); }
             } catch(e) { showAlert('alertMsg', 'Lỗi kết nối', 'error'); }
         });
