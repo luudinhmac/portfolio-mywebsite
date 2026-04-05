@@ -18,11 +18,12 @@ Chào mừng bạn đến với repo của hệ thống **Portfolio & Blog cá n
 - **🏷️ Phân loại nội dung**: Quản lý đa tầng theo Danh mục (Category) và Chuỗi bài viết (Series).
 - **👤 Hồ sơ cá nhân**: Tùy chỉnh Avatar, Số điện thoại, Ngày sinh, Địa chỉ.
 - **👤 Avatar Mặc định**: Tự động hiển thị "Silhouette professional" nếu người dùng chưa đặt avatar.
+- **🔑 Đăng nhập Đa phương thức**: Hỗ trợ đăng nhập linh hoạt bằng cả **Tên đăng nhập (Username)** hoặc **Địa chỉ Email**.
 
 ### 🔒 Bảo mật & Tối ưu
 - **🛡️ Authentication**: Sử dụng JWT (JSON Web Token) kết hợp với mã hóa mật khẩu BcryptJS.
-- **✨ Login Modal Overlay**: Chuyển đổi từ trang đăng nhập tĩnh sang cửa sổ bật lên (Modal) hiện đại với hiệu ứng Glassmorphism (làm mờ hậu cảnh), giúp trải nghiệm người dùng liền mạch hơn.
-- **⚡ Performance**: Tối ưu hóa truy vấn MariaDB, giao diện Responsive mượt mà trên Mobile/Tablet.
+- **✨ Login Modal Overlay**: Chuyển đổi từ trang đăng nhập tĩnh sang cửa sở bật lên (Modal) hiện đại với hiệu ứng Glassmorphism, giúp trải nghiệm người dùng liền mạch hơn.
+- **⚡ Performance & Navigation**: Tối ưu hóa truy vấn MariaDB, tự động điều hướng thông minh sau khi đăng nhập/đăng xuất và cải thiện tốc độ phản hồi trên mọi thiết bị.
 
 ---
 

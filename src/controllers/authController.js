@@ -7,7 +7,7 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const [rows] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
+        const [rows] = await pool.query('SELECT * FROM users WHERE username = ? OR email = ?', [username, username]);
         if (rows.length === 0) {
             return res.status(401).json({ error: 'Tên đăng nhập hoặc mật khẩu không chính xác' });
         }
