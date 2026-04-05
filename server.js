@@ -53,7 +53,7 @@ app.set('views', path.join(__dirname, 'views'));
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000'];
 app.use(cors({
     origin: (origin, callback) => {
-        // In development, we can be more permissive or log the blocked origin
+        // In development OR if the origin is in our allowlist, we permit the request
         if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
             callback(null, true);
         } else {
