@@ -75,7 +75,7 @@ router.get('/post/:id', async (req, res) => {
 
 // Auth
 router.get('/sys-login', (req, res) => {
-    res.render('auth/login');
+    res.redirect('/');
 });
 
 router.get('/auth-success', (req, res) => {

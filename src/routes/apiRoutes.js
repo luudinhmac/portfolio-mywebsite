@@ -31,19 +31,28 @@ const passport = require('passport');
 
 // Auth
 router.post('/login', authController.login);
+router.post('/auth/forgot-password', authController.forgotPassword);
 
 // Social Auth Routes
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/sys-login?error=auth_failed' }),
+router.get('/auth/google', (req, res, next) => {
+    if (!process.env.GOOGLE_CLIENT_ID) return res.status(501).json({ error: 'Google Auth not configured' });
+    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+});
+router.get('/auth/google/callback', (req, res, next) => {
+    if (!process.env.GOOGLE_CLIENT_ID) return res.redirect('/?error=google_not_configured');
+    passport.authenticate('google', { failureRedirect: '/?error=auth_failed' })(req, res, next),
     authController.socialCallback
-);
+});
 
-router.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
-router.get('/auth/facebook/callback', 
-    passport.authenticate('facebook', { failureRedirect: '/sys-login?error=auth_failed' }),
+router.get('/auth/facebook', (req, res, next) => {
+    if (!process.env.FACEBOOK_APP_ID) return res.status(501).json({ error: 'Facebook Auth not configured' });
+    passport.authenticate('facebook', { scope: ['email', 'public_profile'] })(req, res, next);
+});
+router.get('/auth/facebook/callback', (req, res, next) => {
+    if (!process.env.FACEBOOK_APP_ID) return res.redirect('/?error=facebook_not_configured');
+    passport.authenticate('facebook', { failureRedirect: '/?error=auth_failed' })(req, res, next),
     authController.socialCallback
-);
+});
 
 // Posts
 router.get('/posts', verifyToken, postController.getAllPosts);
