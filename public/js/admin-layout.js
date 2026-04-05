@@ -10,12 +10,12 @@
 (function initAdminLayout() {
     // ── 1. Auth Guard ─────────────────────────────────────────
     const token = localStorage.getItem('token');
-    if (!token && !window.location.pathname.includes('/sys-login')) {
-        window.location.href = '/sys-login';
+    if (!token && window.location.pathname.startsWith('/manage_')) {
+        window.location.href = '/';
         return;
     }
 
-    if(token && !window.location.pathname.includes('/sys-login')) {
+    if(token) {
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             window.currentUser = payload; // Global attach
@@ -28,7 +28,7 @@
             });
         } catch(e) {
             localStorage.removeItem('token');
-            window.location.href = '/sys-login';
+            window.location.href = '/';
         }
     }
 
@@ -37,7 +37,7 @@
         if (e.target.closest('#logoutBtn')) {
             e.preventDefault();
             localStorage.removeItem('token');
-            window.location.href = '/sys-login';
+            window.location.href = '/';
         }
     });
 })();
