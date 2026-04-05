@@ -14,6 +14,9 @@ const viewRoutes = require('./src/routes/viewRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust Proxy (Required when running behind Nginx/Docker Proxy)
+app.set('trust proxy', 1);
+
 // Security Middleware
 app.use(helmet({
     contentSecurityPolicy: false, 
@@ -63,7 +66,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Apply rate limits
-app.use('/api/', limiter);
+app.use('/api', limiter);
 app.use('/api/login', loginLimiter);
 
 // Static files
