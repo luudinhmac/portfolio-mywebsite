@@ -20,10 +20,22 @@
                     <span>Tạo Bài Viết</span>
                 </a>
             </li>
-            <li class="<%= currentPage === 'manage_users' ? 'active' : '' %>">
+            <li class="admin-only <%= (typeof currentPage !== 'undefined' && currentPage === 'manage_categories') ? 'active' : '' %>">
+                <a href="/manage_categories">
+                    <i class="fas fa-tags"></i>
+                    <span>Danh Mục</span>
+                </a>
+            </li>
+            <li class="admin-only <%= (typeof currentPage !== 'undefined' && currentPage === 'manage_users') ? 'active' : '' %>">
                 <a href="/manage_users">
                     <i class="fas fa-users-cog"></i>
                     <span>Quản Lý User</span>
+                </a>
+            </li>
+            <li class="<%= (typeof currentPage !== 'undefined' && currentPage === 'profile') ? 'active' : '' %>">
+                <a href="/profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Hồ Sơ Của Tôi</span>
                 </a>
             </li>
             <li>

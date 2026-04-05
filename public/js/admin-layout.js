@@ -12,6 +12,24 @@
     const token = localStorage.getItem('token');
     if (!token && !window.location.pathname.includes('/sys-login')) {
         window.location.href = '/sys-login';
+        return;
+    }
+
+    if(token && !window.location.pathname.includes('/sys-login')) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            window.currentUser = payload; // Global attach
+            
+            // Hide admin stuff if not admin
+            document.addEventListener('DOMContentLoaded', () => {
+                if(payload.role !== 'admin') {
+                    document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+                }
+            });
+        } catch(e) {
+            localStorage.removeItem('token');
+            window.location.href = '/sys-login';
+        }
     }
 
     // ── 2. Logout Button Handler ──────────────────────────────
