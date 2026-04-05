@@ -8,6 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/admin.css">
+    <style>
+        .input-group { position: relative; }
+        .toggle-password {
+            position: absolute; right: 15px; top: 40px; cursor: pointer; color: #64748b;
+        }
+        .toggle-password:hover { color: #1e293b; }
+    </style>
 </head>
 <body>
     <%- include('../partials/admin-header', { currentPage: 'manage_users' }) %>
@@ -33,20 +40,32 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" class="form-control" placeholder="example@email.com">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <input type="email" id="email" class="form-control" required placeholder="example@email.com">
                     </div>
                     
                     <div class="form-group">
+                        <label for="fullname">Họ Tên</label>
+                        <input type="text" id="fullname" class="form-control" placeholder="Nguyễn Văn A">
+                    </div>
+
+                    <div class="form-group input-group">
                         <label for="password">Mật Khẩu <span class="required">*</span></label>
                         <input type="password" id="password" class="form-control" required placeholder="Nhập mật khẩu an toàn...">
+                        <i class="far fa-eye toggle-password" id="togglePass"></i>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <label for="confirm_password">Xác Nhận Mật Khẩu <span class="required">*</span></label>
+                        <input type="password" id="confirm_password" class="form-control" required placeholder="Nhập lại mật khẩu...">
+                        <i class="far fa-eye toggle-password" id="toggleConfirmPass"></i>
                     </div>
                     
                     <div class="form-group">
                         <label for="role">Vai Trò</label>
                         <select id="role" class="form-control">
-                            <option value="admin">Admin</option>
-                            <option value="editor">Editor</option>
+                            <option value="editor">Editor (Đăng bài)</option>
+                            <option value="admin">Admin (Toàn quyền)</option>
                         </select>
                     </div>
                     <div style="margin-top: 30px;">
@@ -63,14 +82,47 @@
 
     <script src="/js/admin-layout.js"></script>
     <script>
+        // Toggle password visibility
+        document.getElementById('togglePass').addEventListener('click', function (e) {
+            const passInput = document.getElementById('password');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                passInput.type = 'password';
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            }
+        });
+
+        document.getElementById('toggleConfirmPass').addEventListener('click', function (e) {
+            const passInput = document.getElementById('confirm_password');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                passInput.type = 'password';
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            }
+        });
+
         document.getElementById('userForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
             const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
+            const fullname = document.getElementById('fullname').value;
             const password = document.getElementById('password').value;
+            const confirm_password = document.getElementById('confirm_password').value;
             const role = document.getElementById('role').value;
             
+            if (password !== confirm_password) {
+                return showAlert('Mật khẩu xác nhận không khớp!', 'error');
+            }
+
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
             btn.disabled = true;
 
@@ -81,7 +133,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${getToken()}` 
                     },
-                    body: JSON.stringify({ username, email, password, role })
+                    body: JSON.stringify({ username, email, fullname, password, role })
                 });
                 
                 const data = await res.json();

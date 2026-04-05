@@ -34,15 +34,9 @@
                     </div>
                     <div class="form-row" style="display:flex; gap:20px;">
                         <div class="form-group" style="flex:1;">
-                            <label for="category">Danh Mục *</label>
-                            <select id="category" class="form-control" required>
-                                <option value="">-- Chọn --</option>
-                                <option value="System">System</option>
-                                <option value="DevOps">DevOps</option>
-                                <option value="VMware">VMware</option>
-                                <option value="Linux">Linux</option>
-                                <option value="Cloud">Cloud</option>
-                                <option value="Khác">Khác</option>
+                            <label for="category_id">Danh Mục</label>
+                            <select id="category_id" class="form-control">
+                                <option value="">-- Tùy chọn --</option>
                             </select>
                         </div>
                         <div class="form-group" style="flex:1;">
@@ -73,11 +67,19 @@
 
         async function loadPost() {
             try {
+                // Fetch cats first so we can assign the matching one later
+                const cRes = await fetch('/api/categories');
+                const cats = await cRes.json();
+                const sel = document.getElementById('category_id');
+                cats.forEach(c => {
+                    sel.insertAdjacentHTML('beforeend', `<option value="${c.id}">${c.name}</option>`);
+                });
+
                 const res = await fetch(`/api/posts/${postId}`);
                 if (!res.ok) throw new Error('Not found');
                 const post = await res.json();
                 document.getElementById('title').value = post.title;
-                document.getElementById('category').value = post.category;
+                document.getElementById('category_id').value = post.category_id || "";
                 document.getElementById('series').value = post.series;
                 document.getElementById('isPinned').checked = !!post.is_pinned;
                 quill.root.innerHTML = post.content || '';
@@ -91,7 +93,7 @@
             e.preventDefault();
             const payload = {
                 title: document.getElementById('title').value,
-                category: document.getElementById('category').value,
+                category_id: document.getElementById('category_id').value,
                 series: document.getElementById('series').value,
                 is_pinned: document.getElementById('isPinned').checked,
                 content: quill.root.innerHTML

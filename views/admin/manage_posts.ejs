@@ -105,7 +105,9 @@
 
         async function fetchPosts() {
             try {
-                const res = await fetch('/api/posts');
+                const res = await fetch('/api/posts', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
                 if (!res.ok) throw new Error('API error');
                 allPosts = await res.json();
                 renderStats(allPosts);
@@ -143,9 +145,29 @@
             const rows = posts.map(post => {
                 const date = formatDate(post.created_at);
                 const catClass = categoryColors[post.category] || 'badge-gray';
+                const isOwner = (window.currentUser && window.currentUser.id === post.author_id);
+                const isAdmin = (window.currentUser && window.currentUser.role === 'admin');
+
                 const pinIcon = post.is_pinned
-                    ? `<i class="fas fa-thumbtack pin-icon" title="Đang ghim"></i>`
-                    : `<span style="color:#cbd5e1">—</span>`;
+                    ? `<i class="fas fa-thumbtack pin-icon" style="color:#f59e0b"></i>`
+                    : `<i class="fas fa-thumbtack pin-icon" style="color:#cbd5e1"></i>`;
+
+                const pinButton = isAdmin ? 
+                    `<button onclick="togglePin(${post.id})" class="btn btn-sm btn-icon" style="background:transparent; border:none; padding:4px;" title="Ghim/Bỏ ghim">${pinIcon}</button>` 
+                    : `<div style="text-align:center;">${post.is_pinned ? '<i class="fas fa-thumbtack" style="color:#f59e0b"></i>' : '<span style="color:#cbd5e1">—</span>'}</div>`;
+
+                const editBtn = isOwner ? `
+                        <a href="/edit_post/${post.id}" class="btn btn-sm btn-primary btn-icon" title="Sửa bài">
+                            <i class="fas fa-pen"></i> Sửa
+                        </a>` : '';
+
+                const deleteBtn = (isOwner || isAdmin) ? `
+                        <button onclick="openDeleteModal(${post.id}, '${escapeHtml(post.title).replace(/'/g, "\\'")}' )"
+                            class="btn btn-sm btn-danger btn-icon" title="Xóa bài">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>` : '';
+
+                const actionButtons = (editBtn || deleteBtn) ? (editBtn + deleteBtn) : `<span style="color:#94a3b8; font-size:0.85rem; font-style:italic;">Không có quyền</span>`;
 
                 return `
                 <tr data-id="${post.id}">
@@ -154,19 +176,12 @@
                         <a href="/post/${post.id}" target="_blank">${escapeHtml(post.title)}</a>
                     </td>
                     <td><span class="badge ${catClass}">${post.category || '—'}</span></td>
+                    <td style="font-weight: 500;">${escapeHtml(post.author_name || 'Admin')}</td>
                     <td style="color:var(--text-muted); white-space:nowrap;">
                         <i class="far fa-calendar-alt" style="margin-right:5px;"></i>${date}
                     </td>
-                    <td style="text-align:center;">${pinIcon}</td>
-                    <td style="white-space:nowrap;">
-                        <a href="/edit_post/${post.id}" class="btn btn-sm btn-primary btn-icon" title="Sửa bài">
-                            <i class="fas fa-pen"></i> Sửa
-                        </a>
-                        <button onclick="openDeleteModal(${post.id}, '${escapeHtml(post.title).replace(/'/g, "\\'")}' )"
-                            class="btn btn-sm btn-danger btn-icon" title="Xóa bài" style="margin-left:6px;">
-                            <i class="fas fa-trash"></i> Xóa
-                        </button>
-                    </td>
+                    <td style="text-align:center;">${pinButton}</td>
+                    <td class="last-child">${actionButtons}</td>
                 </tr>`;
             }).join('');
 
@@ -177,6 +192,7 @@
                             <th>ID</th>
                             <th>Tiêu Đề</th>
                             <th>Danh Mục</th>
+                            <th>Người Đăng</th>
                             <th>Ngày Đăng</th>
                             <th style="text-align:center;">Ghim</th>
                             <th>Thao Tác</th>
@@ -222,13 +238,31 @@
                     renderTable(allPosts);
                     closeDeleteModal();
                 } else {
-                    alert("Có lỗi xảy ra khi xóa bài.");
+                    const data = await res.json();
+                    alert(data.error || "Có lỗi xảy ra khi xóa bài.");
                 }
             } catch (err) {
                 alert("Không thể kết nối đến máy chủ.");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-trash-alt"></i> Xóa ngay';
+            }
+        }
+
+        async function togglePin(id) {
+            try {
+                const res = await fetch(`/api/posts/${id}/pin`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if(res.ok) {
+                    fetchPosts(); // reload table
+                } else {
+                    const data = await res.json();
+                    alert(data.error || 'Lỗi ghim bài');
+                }
+            } catch(e) {
+                alert('Không thể kết nối đến máy chủ');
             }
         }
 
