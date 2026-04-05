@@ -43,7 +43,7 @@ const login = async (req, res) => {
 
 const socialCallback = (req, res) => {
     if (!req.user) {
-        return res.redirect('/sys-login?error=auth_failed');
+        return res.redirect('/?error=auth_failed');
     }
     
     // Generate JWT
@@ -65,4 +65,37 @@ const socialCallback = (req, res) => {
     res.redirect(`/auth-success?token=${token}&user=${userData}`);
 };
 
-module.exports = { login, socialCallback };
+const crypto = require('crypto');
+
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        if (users.length === 0) {
+            return res.status(404).json({ error: 'Email không tồn tại trong hệ thống' });
+        }
+
+        const user = users[0];
+        const resetToken = crypto.randomBytes(20).toString('hex');
+        const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+
+        await pool.query(
+            'UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE id = ?',
+            [resetToken, resetTokenExpiry, user.id]
+        );
+
+        // In a real app, send email here. 
+        // For now, we return success and log the token for development purposes.
+        console.log(`Reset token for ${email}: ${resetToken}`);
+        
+        res.json({ 
+            success: true, 
+            message: 'Yêu cầu đặt lại mật khẩu đã được ghi nhận. Hệ thống sẽ gửi hướng dẫn đến email của bạn.' 
+        });
+    } catch (err) {
+        console.error("Forgot password error:", err);
+        res.status(500).json({ error: 'Lỗi máy chủ nội bộ' });
+    }
+};
+
+module.exports = { login, socialCallback, forgotPassword };
