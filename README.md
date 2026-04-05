@@ -21,6 +21,7 @@ Chào mừng bạn đến với repo của hệ thống **Portfolio & Blog cá n
 
 ### 🔒 Bảo mật & Tối ưu
 - **🛡️ Authentication**: Sử dụng JWT (JSON Web Token) kết hợp với mã hóa mật khẩu BcryptJS.
+- **✨ Login Modal Overlay**: Chuyển đổi từ trang đăng nhập tĩnh sang cửa sổ bật lên (Modal) hiện đại với hiệu ứng Glassmorphism (làm mờ hậu cảnh), giúp trải nghiệm người dùng liền mạch hơn.
 - **⚡ Performance**: Tối ưu hóa truy vấn MariaDB, giao diện Responsive mượt mà trên Mobile/Tablet.
 
 ---
