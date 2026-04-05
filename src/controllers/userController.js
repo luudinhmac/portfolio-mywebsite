@@ -1,6 +1,12 @@
 const { pool } = require('../config/db');
 const bcrypt = require('bcryptjs');
 
+const validatePassword = (password) => {
+    // At least 8 characters, must contain at least one letter and one number
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d\S]{8,}$/;
+    return regex.test(password);
+};
+
 const getUsers = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT id, username, email, fullname, avatar, profession, role, phone, birthday, address, created_at FROM users');
@@ -14,6 +20,10 @@ const createUser = async (req, res) => {
     const { username, email, password, role, fullname, profession, phone, birthday, address } = req.body;
     if (!username || !password) {
         return res.status(400).json({ error: 'Tên đăng nhập và mật khẩu là bắt buộc' });
+    }
+
+    if (!validatePassword(password)) {
+        return res.status(400).json({ error: 'Mật khẩu phải hối thiểu 8 ký tự, bao gồm cả chữ và số.' });
     }
     
     try {
@@ -59,6 +69,10 @@ const updatePassword = async (req, res) => {
     }
 
     if (!new_password) return res.status(400).json({ error: 'Mật khẩu mới là bắt buộc' });
+
+    if (!validatePassword(new_password)) {
+        return res.status(400).json({ error: 'Mật khẩu mới phải hối thiểu 8 ký tự, bao gồm cả chữ và số.' });
+    }
     
     try {
         if (req.user.role !== 'admin' || req.user.id === parseInt(id)) {
@@ -100,3 +114,4 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = { getUsers, createUser, updateProfile, updatePassword, deleteUser };
+

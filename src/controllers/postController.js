@@ -1,5 +1,15 @@
 const { pool } = require('../config/db');
 const mammoth = require('mammoth');
+const sanitizeHtml = require('sanitize-html');
+
+const sanitizeOptions = {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'span']),
+    allowedAttributes: {
+        '*': ['style', 'class', 'id'],
+        'a': ['href', 'name', 'target'],
+        'img': ['src', 'alt', 'width', 'height']
+    }
+};
 
 const getAllPosts = async (req, res) => {
     try {
@@ -44,11 +54,12 @@ const getPostById = async (req, res) => {
 const createPost = async (req, res) => {
     const { title, content, category_id, series, is_pinned } = req.body;
     try {
+        const cleanContent = sanitizeHtml(content, sanitizeOptions);
         const author_id = req.user.id;
         const pinValue = (req.user.role === 'admin' && is_pinned) ? 1 : 0;
         const [result] = await pool.query(
             `INSERT INTO posts (title, content, category_id, author_id, series, is_pinned) VALUES (?, ?, ?, ?, ?, ?)`,
-            [title, content, category_id || null, author_id, series, pinValue]
+            [title, cleanContent, category_id || null, author_id, series, pinValue]
         );
         res.json({ id: result.insertId, success: true });
     } catch (err) {
@@ -66,9 +77,10 @@ const updatePost = async (req, res) => {
             return res.status(403).json({ error: 'Không có quyền sửa bài viết này.' });
         }
 
+        const cleanContent = sanitizeHtml(content, sanitizeOptions);
         await pool.query(
             `UPDATE posts SET title=?, content=?, category_id=?, series=? WHERE id=?`,
-            [title, content, category_id || null, series, req.params.id]
+            [title, cleanContent, category_id || null, series, req.params.id]
         );
         if (req.user.role === 'admin') {
            await pool.query('UPDATE posts SET is_pinned=? WHERE id=?', [is_pinned?1:0, req.params.id]);
@@ -142,10 +154,12 @@ const uploadWord = async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
     try {
         const result = await mammoth.convertToHtml({ buffer: req.file.buffer });
-        res.json({ html: result.value });
+        const cleanHtml = sanitizeHtml(result.value, sanitizeOptions);
+        res.json({ html: cleanHtml });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
 module.exports = { getAllPosts, getPostById, createPost, updatePost, deletePost, uploadWord, togglePin, toggleLike, getLikeStatus };
+
