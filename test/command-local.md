@@ -1,2 +1,0 @@
-- mv test/logs-test.log test/log-test.log
-- git status

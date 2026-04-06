@@ -5,6 +5,7 @@ const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const passport = require('./src/config/passport');
 const { pool } = require('./src/config/db');
 const { initDB } = require('./src/config/initDB');
@@ -21,12 +22,20 @@ app.set('trust proxy', 1);
 app.use(helmet({
     contentSecurityPolicy: false, 
 }));
+app.use(cookieParser());
 
 // Session (Needed for Passport)
 app.use(session({
+    name: 'portfolio_session_id',
     secret: process.env.SESSION_SECRET || 'portfolio_session_secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: true, // Always send session cookie on first request
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 8 * 60 * 60 * 1000 // 8 hours
+    }
 }));
 
 app.use(passport.initialize());
@@ -41,7 +50,7 @@ const limiter = rateLimit({
 
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 10, // Limit each IP to 10 login attempts per 15 minutes
+    max: 100, // Increased for testing
     message: 'Too many login attempts, please try again later'
 });
 
@@ -53,14 +62,15 @@ app.set('views', path.join(__dirname, 'views'));
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000'];
 app.use(cors({
     origin: (origin, callback) => {
-        // In development OR if the origin is in our allowlist, we permit the request
+        // When credentials: true is set, we MUST return a specific origin, NOT '*'
         if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
             callback(null, true);
         } else {
             console.error('CORS Error: Origin not allowed:', origin);
             callback(new Error('Not allowed by CORS'));
         }
-    }
+    },
+    credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));

@@ -127,12 +127,10 @@
         const heartIcon = document.getElementById('heartIcon');
 
         async function checkLikeStatus() {
-            const token = sessionStorage.getItem('token');
-            if(!token) return;
+            const user = sessionStorage.getItem('currentUser');
+            if(!user) return;
             try {
-                const res = await fetch(`/api/posts/${postId}/like-status`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const res = await fetch(`/api/posts/${postId}/like-status`);
                 const data = await res.json();
                 updateLikeUI(data.liked);
             } catch(e) {}
@@ -151,15 +149,21 @@
         }
 
         btnLike.addEventListener('click', async () => {
-            const token = sessionStorage.getItem('token');
-            if(!token) {
-                alert('Vui lòng đăng nhập để thực hiện tính năng này!');
+            const user = sessionStorage.getItem('currentUser');
+            if(!user) {
+                // Mở modal đăng nhập (trigger-login-modal đã có class này trong header.ejs)
+                const loginOverlay = document.getElementById('loginOverlay');
+                if (loginOverlay) {
+                    loginOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    alert('Vui lòng đăng nhập để thực hiện tính năng này!');
+                }
                 return;
             }
             try {
                 const res = await fetch(`/api/posts/${postId}/like`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    method: 'POST'
                 });
                 const data = await res.json();
                 updateLikeUI(data.liked);

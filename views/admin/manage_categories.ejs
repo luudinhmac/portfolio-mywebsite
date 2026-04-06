@@ -61,6 +61,10 @@
         async function fetchCategories() {
             try {
                 const res = await fetch('/api/categories');
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = '/';
+                    return;
+                }
                 const data = await res.json();
                 renderTable(data);
             } catch (err) {
@@ -104,10 +108,14 @@
             try {
                 const res = await fetch(url, {
                     method,
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name })
                 });
                 
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = '/';
+                    return;
+                }
                 if (res.ok) {
                     cancelEdit();
                     fetchCategories();
@@ -138,10 +146,13 @@
         async function deleteCat(id) {
             if(!confirm('Chắc chắn muốn xóa danh mục này?')) return;
             try {
-                await fetch(`/api/categories/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                const res = await fetch(`/api/categories/${id}`, {
+                    method: 'DELETE'
                 });
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = '/';
+                    return;
+                }
                 fetchCategories();
             } catch(e) {
                 alert('Lỗi khi xóa!');

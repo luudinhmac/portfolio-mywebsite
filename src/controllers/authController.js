@@ -22,6 +22,17 @@ const login = async (req, res) => {
                 { expiresIn: '8h' }
             );
             req.session.userId = user.id; // Store in session for server-side validation
+            
+            // Set token in a session cookie (deleted on browser close)
+            res.cookie('token', token, { 
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/'
+            });
+
+            console.log(`User logged in successfully: ${user.username}`);
+
             res.json({ 
                 success: true, 
                 token,
@@ -64,6 +75,15 @@ const socialCallback = (req, res) => {
     }));
     
     req.session.userId = req.user.id; // Store in session for server-side validation
+    
+    // Set token in a session cookie (deleted on browser close)
+    res.cookie('token', token, { 
+        httpOnly: true, 
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/'
+    });
+
     res.redirect(`/auth-success?token=${token}&user=${userData}`);
 };
 
@@ -100,4 +120,22 @@ const forgotPassword = async (req, res) => {
     }
 };
 
-module.exports = { login, socialCallback, forgotPassword };
+const getMe = async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT id, username, fullname, avatar, role FROM users WHERE id = ?', [req.user.id]);
+        if (rows.length === 0) return res.status(404).json({ error: 'Người dùng không tồn tại' });
+        res.json({ user: rows[0] });
+    } catch (err) {
+        res.status(500).json({ error: 'Lỗi máy chủ nội bộ' });
+    }
+};
+
+const logout = (req, res) => {
+    res.clearCookie('token', { path: '/' });
+    if (req.session) {
+        req.session.destroy();
+    }
+    res.json({ success: true, message: 'Đã đăng xuất thành công' });
+};
+
+module.exports = { login, socialCallback, forgotPassword, getMe, logout };
