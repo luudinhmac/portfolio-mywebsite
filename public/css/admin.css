@@ -29,6 +29,43 @@
     --transition:    all .22s ease;
 }
 
+/* Dark Mode Overrides */
+body.dark-mode {
+    --body-bg:       #0f172a;
+    --surface:       #1e293b;
+    --border:        #334155;
+    --text-main:     #f1f5f9;
+    --text-muted:    #94a3b8;
+    --dark:          #f8fafc;
+    --nav-bg:        #0f172a;
+}
+
+body.dark-mode .page-header h1 {
+    color: var(--text-main);
+}
+
+body.dark-mode .form-control {
+    background: #1e293b;
+    color: #f1f5f9;
+    border-color: #334155;
+}
+
+body.dark-mode .stat-card {
+    background: #1e293b;
+}
+
+body.dark-mode .table-card {
+    background: #1e293b;
+}
+
+body.dark-mode .data-table th {
+    background: #0f172a;
+}
+
+body.dark-mode .data-table tbody tr:hover {
+    background: #1e293b;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     background: var(--body-bg);

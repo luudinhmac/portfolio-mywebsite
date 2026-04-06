@@ -1,373 +1,411 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lưu Đình Mác - System Engineer Portfolio</title>
-    <meta name="description" content="Portfolio của Lưu Đình Mác, chuyên gia System Engineer với kinh nghiệm về Linux, ảo hóa, lưu trữ và hạ tầng Cloud.">
-    
+    <meta name="description"
+        content="Portfolio của Lưu Đình Mác, chuyên gia System Engineer với kinh nghiệm về Linux, ảo hóa, lưu trữ và hạ tầng Cloud.">
+
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/styles.css">
 </head>
+
 <body>
     <%- include('../partials/header') %>
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero">
-        <div class="hero-container">
-            <div class="hero-content reveal">
-                <p class="hero-subtitle">Xin chào, tôi là</p>
-                <h1 class="hero-title">Lưu Đình Mác</h1>
-                <h2 class="hero-role">System Engineer</h2>
-                <p class="hero-description">
-                    Chuyên gia Kỹ sư Hệ thống với kinh nghiệm chuyên sâu về Linux, ảo hóa (VMware, Proxmox), lưu trữ (SAN, CEPH) và hạ tầng điện toán đám mây. 
-                    Sở hữu khả năng khắc phục sự cố nghiêm trọng, tự động hóa quy trình vận hành và duy trì hệ thống luôn đạt tính sẵn sàng cao (HA).
-                </p>
-                <div class="hero-actions">
-                    <a href="#experience" class="btn-primary">Xem Kinh Nghiệm</a>
-                    <a href="#contact" class="btn-secondary">Gửi Tin Nhắn</a>
-                </div>
-                <div class="hero-social">
-                    <a href="mailto:luumac2801@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
-                    <a href="https://luumac.io.vn" target="_blank" aria-label="Website"><i class="fas fa-globe"></i></a>
-                    <a href="tel:0965175646" aria-label="Phone"><i class="fas fa-phone"></i></a>
-                </div>
-            </div>
-            <div class="hero-visual reveal">
-                <div class="visual-blob"></div>
-                <div class="visual-profile">
-                    <i class="fas fa-server"></i>
-                </div>
-                <div class="floating-box box-1">
-                    <i class="fab fa-linux"></i> 
-                    <span>Linux Expert</span>
-                </div>
-                <div class="floating-box box-2">
-                    <i class="fas fa-cloud"></i>
-                    <span>Cloud & Virtualization</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="section bg-light">
-        <div class="section-container">
-            <div class="section-header reveal">
-                <h2>Về Tôi</h2>
-                <div class="header-line"></div>
-            </div>
-            <div class="about-grid">
-                <div class="about-text reveal">
-                    <p>Với nền tảng là Cử nhân Công nghệ Thông tin tốt nghiệp trường Đại học Sư phạm Kỹ thuật TP.HCM (2014-2019), tôi không ngừng trau dồi và theo đuổi sự nghiệp kỹ sư hệ thống.</p>
-                    <p>Tôi đặc biệt đam mê tự động hóa quy trình vận hành, triển khai kiến trúc hệ thống an toàn và có khả năng mở rộng. Cam kết mang đến thời gian hoạt động (uptime) ấn tượng, giải quyết các sự cố hỏng hóc phức tạp nhất với thời gian tối thiểu.</p>
-                    <p class="highlight">Không ngừng học hỏi về DevOps, Kubernetes, AWS và Terraform để bắt kịp xu hướng công nghệ hiện đại.</p>
-                </div>
-                <div class="about-stats reveal">
-                    <div class="stat-card">
-                        <h3>6+</h3>
-                        <p>Năm Kinh nghiệm</p>
+        <!-- Hero Section -->
+        <section id="hero" class="hero">
+            <div class="hero-container">
+                <div class="hero-content reveal">
+                    <p class="hero-subtitle">Xin chào, tôi là</p>
+                    <h2 class="hero-title">Lưu Đình Mác</h2>
+                    <h3 class="hero-role">System Engineer</h3>
+                    <p class="hero-description">
+                        Chuyên gia Kỹ sư Hệ thống với kinh nghiệm chuyên sâu về Linux, ảo hóa (VMware, Proxmox), lưu trữ
+                        (SAN, CEPH) và hạ tầng điện toán đám mây.
+                        Sở hữu khả năng khắc phục sự cố nghiêm trọng, tự động hóa quy trình vận hành và duy trì hệ thống
+                        luôn đạt tính sẵn sàng cao (HA).
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#experience" class="btn-primary">Xem Kinh Nghiệm</a>
+                        <a href="#contact" class="btn-secondary">Gửi Tin Nhắn</a>
                     </div>
-                    <div class="stat-card">
-                        <h3>99.9%</h3>
-                        <p>Uptime Đạt được</p>
+                    <div class="hero-social">
+                        <a href="mailto:luumac2801@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                        <a href="https://luumac.io.vn" target="_blank" aria-label="Website"><i
+                                class="fas fa-globe"></i></a>
+                        <a href="tel:0965175646" aria-label="Phone"><i class="fas fa-phone"></i></a>
                     </div>
-                    <div class="stat-card">
-                        <h3>5+</h3>
-                        <p>Chứng chỉ Cơ sở hạ tầng</p>
+                </div>
+                <div class="hero-visual reveal">
+                    <div class="visual-blob"></div>
+                    <div class="visual-profile">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="floating-box box-1">
+                        <i class="fab fa-linux"></i>
+                        <span>Linux Expert</span>
+                    </div>
+                    <div class="floating-box box-2">
+                        <i class="fas fa-cloud"></i>
+                        <span>Cloud & Virtualization</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="section">
-        <div class="section-container">
-            <div class="section-header reveal">
-                <h2>Kỹ Năng Kỹ Thuật</h2>
-                <div class="header-line"></div>
-                <p class="section-desc">Bộ công cụ và công nghệ tôi sử dụng để xây dựng và tự động hóa hệ thống máy chủ.</p>
-            </div>
-            
-            <div class="skills-grid">
-                <div class="skill-category reveal">
-                    <div class="skill-icon"><i class="fab fa-linux"></i></div>
-                    <h3>Hệ Điều Hành</h3>
-                    <ul class="skill-list">
-                        <li>Linux (Ubuntu, CentOS, Debian)</li>
-                        <li>Windows Server</li>
-                        <li>Oracle Linux</li>
-                    </ul>
+        <!-- About Section -->
+        <section id="about" class="section bg-light">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <h2>Về Tôi</h2>
+                    <div class="header-line"></div>
                 </div>
-                
-                <div class="skill-category reveal">
-                    <div class="skill-icon"><i class="fas fa-cube"></i></div>
-                    <h3>Ảo hóa & Container</h3>
-                    <ul class="skill-list">
-                        <li>VMware ESXi, vCenter, vSAN</li>
-                        <li>OpenStack, Proxmox, KVM</li>
-                        <li>Docker, Kubernetes</li>
-                        <li>VDI</li>
-                    </ul>
-                </div>
-
-                <div class="skill-category reveal">
-                    <div class="skill-icon"><i class="fas fa-network-wired"></i></div>
-                    <h3>Network & Security</h3>
-                    <ul class="skill-list">
-                        <li>TCP/IP, LAN, WAN, DNS, VPN, HA</li>
-                        <li>Firewall: Sophos, Fortinet, pfSense</li>
-                        <li>Security Monitoring: Wazuh</li>
-                        <li>CVE Patching</li>
-                    </ul>
-                </div>
-
-                <div class="skill-category reveal">
-                    <div class="skill-icon"><i class="fas fa-hdd"></i></div>
-                    <h3>Hardware & Storage</h3>
-                    <ul class="skill-list">
-                        <li>Server, SAN (Dell, IBM, 3PAR, MSA)</li>
-                        <li>RAID Array, Tape Library</li>
-                        <li>MPIO, Tiering Storage</li>
-                        <li>CEPH Distributed Storage</li>
-                    </ul>
-                </div>
-
-                <div class="skill-category reveal">
-                    <div class="skill-icon"><i class="fas fa-terminal"></i></div>
-                    <h3>Scripting & CI/CD</h3>
-                    <ul class="skill-list">
-                        <li>Python, Bash</li>
-                        <li>Ansible, Terraform</li>
-                        <li>Git, GitLab, Jenkins</li>
-                        <li>SonarQube, Harbor, Rancher</li>
-                    </ul>
-                </div>
-
-                <div class="skill-category reveal">
-                    <div class="skill-icon"><i class="fas fa-chart-line"></i></div>
-                    <h3>Monitoring & Cloud</h3>
-                    <ul class="skill-list">
-                        <li>AWS (EC2, S3, IAM, VPC)</li>
-                        <li>Prometheus, Grafana, Zabbix</li>
-                        <li>Nagios, ELK Stack</li>
-                        <li>Apache, Nginx, HAProxy</li>
-                    </ul>
+                <div class="about-grid">
+                    <div class="about-text reveal">
+                        <p>Với nền tảng là Kỹ sư Công nghệ Thông tin tốt nghiệp trường Đại học Sư phạm Kỹ thuật TP.HCM
+                            (2014-2019), tôi không ngừng trau dồi và theo đuổi sự nghiệp kỹ sư hệ thống.</p>
+                        <p>Tôi đặc biệt đam mê tự động hóa quy trình vận hành, triển khai kiến trúc hệ thống an toàn và
+                            có khả năng mở rộng. Cam kết mang đến thời gian hoạt động (uptime) ấn tượng, giải quyết các
+                            sự cố hỏng hóc phức tạp nhất với thời gian tối thiểu.</p>
+                        <p class="highlight">Không ngừng học hỏi về DevOps, Kubernetes, AWS và Terraform để bắt kịp xu
+                            hướng công nghệ hiện đại.</p>
+                    </div>
+                    <div class="about-stats reveal">
+                        <div class="stat-card">
+                            <h3>6+</h3>
+                            <p>Năm Kinh nghiệm</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>99.9%</h3>
+                            <p>Uptime Đạt được</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>5+</h3>
+                            <p>Chứng chỉ Cơ sở hạ tầng</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Experience Timeline -->
-    <section id="experience" class="section bg-light">
-        <div class="section-container">
-            <div class="section-header reveal">
-                <h2>Kinh Nghiệm Làm Việc</h2>
-                <div class="header-line"></div>
-            </div>
-            
-            <div class="timeline">
-                <div class="timeline-item reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">11/2023 – Nay</div>
-                        <h3 class="timeline-title">Chuyên Viên Dịch Vụ IT / Kỹ Sư Hệ Thống</h3>
-                        <h4 class="timeline-company">Công ty Cổ phần Công nghệ Kỹ thuật Thi Thiên</h4>
-                        <ul class="timeline-details">
-                            <li><strong>Phục hồi thảm họa:</strong> Khôi phục quyền truy cập ESXi 8 cho BV Bưu Điện, đưa hệ thống hoạt động trở lại trong 2 giờ sau 10 ngày gián đoạn. Phục hồi mật khẩu ESXi 7 cho Vietsovpetro Resort Hồ Tràm (downtime < 1 giờ).</li>
-                            <li><strong>Cơ sở dữ liệu & Lưu trữ:</strong> Triển khai SQL Server FCI (HA) trên WS 2022. Triển khai HPE MSA 2060 (iSCSI Direct Attach, MPIO, Storage Tiering).</li>
-                            <li><strong>Phần cứng & Ảo hóa:</strong> Chẩn đoán và thay thế lỗi phần cứng Server, SAN (Dell, IBM, 3PAR, MSA), Tape. Xử lý sự cố đồng bộ HA trên cụm HPE SimpliVity.</li>
-                            <li><strong>Hỗ trợ & Tích hợp:</strong> Cấu hình TensorFlow, PyTorch, Jupyter Notebook với CUDA/GPU. Chuyên hỗ trợ cấu hình VMware, Proxmox, Linux, khôi phục cụm RAID.</li>
+        <!-- Skills Section -->
+        <section id="skills" class="section">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <h2>Kỹ Năng Kỹ Thuật</h2>
+                    <div class="header-line"></div>
+                    <p class="section-desc">Bộ công cụ và công nghệ tôi sử dụng để xây dựng và tự động hóa hệ thống máy
+                        chủ.</p>
+                </div>
+
+                <div class="skills-grid">
+                    <div class="skill-category reveal">
+                        <div class="skill-icon"><i class="fab fa-linux"></i></div>
+                        <h3>Hệ Điều Hành</h3>
+                        <ul class="skill-list">
+                            <li>Linux (Ubuntu, CentOS, Debian)</li>
+                            <li>Windows Server</li>
+                            <li>Oracle Linux</li>
                         </ul>
                     </div>
-                </div>
 
-                <div class="timeline-item reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">09/2020 – 04/2022</div>
-                        <h3 class="timeline-title">Chuyên Viên Hệ Thống IT</h3>
-                        <h4 class="timeline-company">Công ty TNHH Kỹ thuật Delta (Nay là DEC Engineering)</h4>
-                        <ul class="timeline-details">
-                            <li><strong>Vận hành Đám mây riêng (Private Cloud):</strong> Triển khai và quản trị cụm Proxmox, OpenStack; giải pháp lưu trữ phân tán CEPH; xây dựng Nextcloud tích hợp SSO qua ADFS.</li>
-                            <li><strong>Hệ thống & Mạng lưới:</strong> Quản trị Domain Controller, Windows VDI; Cấu hình Firewall (Sophos, Fortinet, pfSense). Cài đặt Remote Gateway Apache Guacamole.</li>
-                            <li><strong>Tự động hóa & Giám sát:</strong> Tự động hóa công việc bằng Bash & Python (giảm 80% công sức thủ công). Triển khai giám sát tập trung với Zabbix, Grafana.</li>
-                            <li><strong>Bảo mật & CSDL:</strong> Cấu hình HA Databases (MariaDB, PostgreSQL). vá lỗi hệ thống và backup/restore định kỳ.</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="timeline-item reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">2025 (Các dự án ngắn hạn)</div>
-                        <h3 class="timeline-title">Freelance System Engineer</h3>
-                        <h4 class="timeline-company">Hỗ trợ triển khai Kubernetes & OpenStack</h4>
-                        <ul class="timeline-details">
-                            <li><strong>Kubernetes:</strong> Xử lý lỗi worker nodes không join được vào cụm. Khôi phục máy chủ ứng dụng nội bộ bằng cách triển khai lại các Kubernetes manifests.</li>
-                            <li><strong>OpenStack:</strong> Xử lý lỗi triển khai qua Kolla-Ansible. Sửa lỗi khởi động dịch vụ, config & proxy/dependency, giúp OpenStack hoạt động ổn định.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="timeline-item reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">01/2019 – 12/2019</div>
-                        <h3 class="timeline-title">Vận Hành Hệ Thống (Mảng Vietlott)</h3>
-                        <h4 class="timeline-company">Berjaya Gia Thịnh Investment Technology JSC</h4>
-                        <ul class="timeline-details">
-                            <li>Giám sát máy chủ mạng và dịch vụ, duy trì tính ổn định trong quá trình quay số Vietlott.</li>
-                            <li>Quản lý backup dữ liệu bằng Tape hàng ngày/hàng tuần, vận chuyển Tape đến PDC/DRC.</li>
-                            <li>Cài đặt Mail server trên CentOS 6; vận hành hệ thống OSS trên OpenVMS.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="timeline-item reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-date">01/2018 – 08/2018</div>
-                        <h3 class="timeline-title">Thực tập sinh NOC Operator</h3>
-                        <h4 class="timeline-company">Công ty Cổ phần Dịch vụ Di Động Trực Tuyến (MoMo)</h4>
-                        <ul class="timeline-details">
-                            <li>Theo dõi, giám sát máy chủ dịch vụ qua Nagios, Grafana. Hỗ trợ ghi nhận log lỗi phần mềm.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="section">
-        <div class="section-container">
-            <div class="section-header reveal">
-                <h2>Dự Án Nổi Bật & Chứng Chỉ</h2>
-                <div class="header-line"></div>
-            </div>
-            
-            <div class="projects-grid">
-                <div class="project-card reveal">
-                    <div class="project-content">
-                        <div class="project-tag">Cloud & Lữu trữ</div>
-                        <h3 class="project-title">Private Cloud & CEPH Storage</h3>
-                        <p class="project-desc">Xây dựng Private Cloud trên nền tảng OpenStack & Proxmox với hệ thống lưu trữ phân tán CEPH. Tích hợp Nextcloud cho lưu trữ file doanh nghiệp và xác thực SSO qua ADFS.</p>
-                        <ul class="project-tech">
-                            <li>OpenStack</li>
-                            <li>Proxmox</li>
-                            <li>CEPH</li>
-                            <li>ADFS</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="project-card reveal">
-                    <div class="project-content">
-                        <div class="project-tag">Monitoring & Automation</div>
-                        <h3 class="project-title">Hệ thống Giám sát & Tự động hóa</h3>
-                        <p class="project-desc">Triển khai hệ thống cảnh báo và giám sát tập trung sử dụng Zabbix kết hợp Grafana. Tự động hóa các tác vụ quản trị hàng ngày qua Bash/Python giúp giảm thiểu 80% thời gian xử lý thủ công.</p>
-                        <ul class="project-tech">
-                            <li>Zabbix</li>
-                            <li>Grafana</li>
-                            <li>Python</li>
-                            <li>Bash</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="project-card reveal">
-                    <div class="project-content">
-                        <div class="project-tag">Bảo mật & Tối ưu</div>
-                        <h3 class="project-title">High Availability & VDI</h3>
-                        <p class="project-desc">Cấu hình tính sẵn sàng cao (HA) cho MariaDB, PostgreSQL và SQL Server. Triển khai VDI cùng Thin Client giúp doanh nghiệp giảm thiểu chi phí năng lượng và vận hành.</p>
-                        <ul class="project-tech">
-                            <li>HAProxy</li>
-                            <li>SQL Server FCI</li>
+                    <div class="skill-category reveal">
+                        <div class="skill-icon"><i class="fas fa-cube"></i></div>
+                        <h3>Ảo hóa & Container</h3>
+                        <ul class="skill-list">
+                            <li>VMware ESXi, vCenter, vSAN</li>
+                            <li>OpenStack, Proxmox, KVM</li>
+                            <li>Docker, Kubernetes</li>
                             <li>VDI</li>
-                            <li>Thin Client</li>
+                        </ul>
+                    </div>
+
+                    <div class="skill-category reveal">
+                        <div class="skill-icon"><i class="fas fa-network-wired"></i></div>
+                        <h3>Network & Security</h3>
+                        <ul class="skill-list">
+                            <li>TCP/IP, LAN, WAN, DNS, VPN, HA</li>
+                            <li>Firewall: Sophos, Fortinet, pfSense</li>
+                            <li>Security Monitoring: Wazuh</li>
+                            <li>CVE Patching</li>
+                        </ul>
+                    </div>
+
+                    <div class="skill-category reveal">
+                        <div class="skill-icon"><i class="fas fa-hdd"></i></div>
+                        <h3>Hardware & Storage</h3>
+                        <ul class="skill-list">
+                            <li>Server, SAN (Dell, IBM, 3PAR, MSA)</li>
+                            <li>RAID Array, Tape Library</li>
+                            <li>MPIO, Tiering Storage</li>
+                            <li>CEPH Distributed Storage</li>
+                        </ul>
+                    </div>
+
+                    <div class="skill-category reveal">
+                        <div class="skill-icon"><i class="fas fa-terminal"></i></div>
+                        <h3>Scripting & CI/CD</h3>
+                        <ul class="skill-list">
+                            <li>Python, Bash</li>
+                            <li>Ansible, Terraform</li>
+                            <li>Git, GitLab, Jenkins</li>
+                            <li>SonarQube, Harbor, Rancher</li>
+                        </ul>
+                    </div>
+
+                    <div class="skill-category reveal">
+                        <div class="skill-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Monitoring & Cloud</h3>
+                        <ul class="skill-list">
+                            <li>AWS (EC2, S3, IAM, VPC)</li>
+                            <li>Prometheus, Grafana, Zabbix</li>
+                            <li>Nagios, ELK Stack</li>
+                            <li>Apache, Nginx, HAProxy</li>
                         </ul>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Certificates Highlight Section -->
-            <div class="section-header reveal" style="margin-top: 80px;" id="certificates">
-                <h2>Chứng Chỉ & Khóa Học</h2>
-                <div class="header-line"></div>
-                <p class="section-desc">Các chứng chỉ chuyên môn và khóa học tôi đã hoàn thành để nâng cao nghiệp vụ System Engineer. Click vào ảnh để xem chi tiết.</p>
+        <!-- Experience Timeline -->
+        <section id="experience" class="section bg-light">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <h2>Kinh Nghiệm Làm Việc</h2>
+                    <div class="header-line"></div>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item reveal">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">11/2023 – Nay</div>
+                            <h3 class="timeline-title">Chuyên Viên Dịch Vụ IT / Kỹ Sư Hệ Thống</h3>
+                            <h4 class="timeline-company">Công ty Cổ phần Công nghệ Kỹ thuật Thi Thiên</h4>
+                            <ul class="timeline-details">
+                                <li><strong>Phục hồi thảm họa:</strong> Khôi phục quyền truy cập ESXi 8 cho BV Bưu Điện,
+                                    đưa hệ thống hoạt động trở lại trong 2 giờ sau 10 ngày gián đoạn. Phục hồi mật khẩu
+                                    ESXi 7 cho Vietsovpetro Resort Hồ Tràm (downtime < 1 giờ).</li>
+                                <li><strong>Cơ sở dữ liệu & Lưu trữ:</strong> Triển khai SQL Server FCI (HA) trên WS
+                                    2022. Triển khai HPE MSA 2060 (iSCSI Direct Attach, MPIO, Storage Tiering).</li>
+                                <li><strong>Phần cứng & Ảo hóa:</strong> Chẩn đoán và thay thế lỗi phần cứng Server, SAN
+                                    (Dell, IBM, 3PAR, MSA), Tape. Xử lý sự cố đồng bộ HA trên cụm HPE SimpliVity.</li>
+                                <li><strong>Hỗ trợ & Tích hợp:</strong> Cấu hình TensorFlow, PyTorch, Jupyter Notebook
+                                    với CUDA/GPU. Chuyên hỗ trợ cấu hình VMware, Proxmox, Linux, khôi phục cụm RAID.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item reveal">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">09/2020 – 04/2022</div>
+                            <h3 class="timeline-title">Chuyên Viên Hệ Thống IT</h3>
+                            <h4 class="timeline-company">Công ty TNHH Kỹ thuật Delta (Nay là DEC Engineering)</h4>
+                            <ul class="timeline-details">
+                                <li><strong>Vận hành Đám mây riêng (Private Cloud):</strong> Triển khai và quản trị cụm
+                                    Proxmox, OpenStack; giải pháp lưu trữ phân tán CEPH; xây dựng Nextcloud tích hợp SSO
+                                    qua ADFS.</li>
+                                <li><strong>Hệ thống & Mạng lưới:</strong> Quản trị Domain Controller, Windows VDI; Cấu
+                                    hình Firewall (Sophos, Fortinet, pfSense). Cài đặt Remote Gateway Apache Guacamole.
+                                </li>
+                                <li><strong>Tự động hóa & Giám sát:</strong> Tự động hóa công việc bằng Bash & Python
+                                    (giảm 80% công sức thủ công). Triển khai giám sát tập trung với Zabbix, Grafana.
+                                </li>
+                                <li><strong>Bảo mật & CSDL:</strong> Cấu hình HA Databases (MariaDB, PostgreSQL). vá lỗi
+                                    hệ thống và backup/restore định kỳ.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item reveal">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">2025 (Các dự án ngắn hạn)</div>
+                            <h3 class="timeline-title">Freelance System Engineer</h3>
+                            <h4 class="timeline-company">Hỗ trợ triển khai Kubernetes & OpenStack</h4>
+                            <ul class="timeline-details">
+                                <li><strong>Kubernetes:</strong> Xử lý lỗi worker nodes không join được vào cụm. Khôi
+                                    phục máy chủ ứng dụng nội bộ bằng cách triển khai lại các Kubernetes manifests.</li>
+                                <li><strong>OpenStack:</strong> Xử lý lỗi triển khai qua Kolla-Ansible. Sửa lỗi khởi
+                                    động dịch vụ, config & proxy/dependency, giúp OpenStack hoạt động ổn định.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item reveal">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">01/2019 – 12/2019</div>
+                            <h3 class="timeline-title">Vận Hành Hệ Thống (Mảng Vietlott)</h3>
+                            <h4 class="timeline-company">Berjaya Gia Thịnh Investment Technology JSC</h4>
+                            <ul class="timeline-details">
+                                <li>Giám sát máy chủ mạng và dịch vụ, duy trì tính ổn định trong quá trình quay số
+                                    Vietlott.</li>
+                                <li>Quản lý backup dữ liệu bằng Tape hàng ngày/hàng tuần, vận chuyển Tape đến PDC/DRC.
+                                </li>
+                                <li>Cài đặt Mail server trên CentOS 6; vận hành hệ thống OSS trên OpenVMS.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item reveal">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">01/2018 – 08/2018</div>
+                            <h3 class="timeline-title">Thực tập sinh NOC Operator</h3>
+                            <h4 class="timeline-company">Công ty Cổ phần Dịch vụ Di Động Trực Tuyến (MoMo)</h4>
+                            <ul class="timeline-details">
+                                <li>Theo dõi, giám sát máy chủ dịch vụ qua Nagios, Grafana. Hỗ trợ ghi nhận log lỗi phần
+                                    mềm.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="certificates-grid">
-                <!-- Cert 1 -->
-                <div class="cert-card reveal">
-                    <div class="cert-img-wrapper">
-                        <a href="/images/certificates/Kubernetes.PNG" target="_blank">
-                            <img src="/images/certificates/Kubernetes.PNG" alt="Kubernetes">
-                        </a>
-                    </div>
-                    <div class="cert-info">
-                        <h4>Practical Kubernetes</h4>
-                        <p>TechMaster Vietnam (2024)</p>
-                    </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <div class="section-container">
+                <div class="section-header reveal">
+                    <h2>Dự Án Nổi Bật & Chứng Chỉ</h2>
+                    <div class="header-line"></div>
                 </div>
-                
-                <!-- Cert 2 -->
-                <div class="cert-card reveal">
-                    <div class="cert-img-wrapper">
-                        <a href="/images/certificates/Devsecops.jpg" target="_blank">
-                            <img src="/images/certificates/Devsecops.jpg" alt="DevSecOps">
-                        </a>
+
+                <div class="projects-grid">
+                    <div class="project-card reveal">
+                        <div class="project-content">
+                            <div class="project-tag">Cloud & Lữu trữ</div>
+                            <h3 class="project-title">Private Cloud & CEPH Storage</h3>
+                            <p class="project-desc">Xây dựng Private Cloud trên nền tảng OpenStack & Proxmox với hệ
+                                thống lưu trữ phân tán CEPH. Tích hợp Nextcloud cho lưu trữ file doanh nghiệp và xác
+                                thực SSO qua ADFS.</p>
+                            <ul class="project-tech">
+                                <li>OpenStack</li>
+                                <li>Proxmox</li>
+                                <li>CEPH</li>
+                                <li>ADFS</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="cert-info">
-                        <h4>DevOps & DevSecOps</h4>
-                        <p>Chứng chỉ hoàn thành (2024)</p>
+
+                    <div class="project-card reveal">
+                        <div class="project-content">
+                            <div class="project-tag">Monitoring & Automation</div>
+                            <h3 class="project-title">Hệ thống Giám sát & Tự động hóa</h3>
+                            <p class="project-desc">Triển khai hệ thống cảnh báo và giám sát tập trung sử dụng Zabbix
+                                kết hợp Grafana. Tự động hóa các tác vụ quản trị hàng ngày qua Bash/Python giúp giảm
+                                thiểu 80% thời gian xử lý thủ công.</p>
+                            <ul class="project-tech">
+                                <li>Zabbix</li>
+                                <li>Grafana</li>
+                                <li>Python</li>
+                                <li>Bash</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="project-card reveal">
+                        <div class="project-content">
+                            <div class="project-tag">Bảo mật & Tối ưu</div>
+                            <h3 class="project-title">High Availability & VDI</h3>
+                            <p class="project-desc">Cấu hình tính sẵn sàng cao (HA) cho MariaDB, PostgreSQL và SQL
+                                Server. Triển khai VDI cùng Thin Client giúp doanh nghiệp giảm thiểu chi phí năng lượng
+                                và vận hành.</p>
+                            <ul class="project-tech">
+                                <li>HAProxy</li>
+                                <li>SQL Server FCI</li>
+                                <li>VDI</li>
+                                <li>Thin Client</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Cert 3 -->
-                <div class="cert-card reveal">
-                    <div class="cert-img-wrapper">
-                        <a href="/images/certificates/Docker.jpg" target="_blank">
-                            <img src="/images/certificates/Docker.jpg" alt="Docker">
-                        </a>
-                    </div>
-                    <div class="cert-info">
-                        <h4>Docker For DevOps</h4>
-                        <p>Thực hành chuyên sâu</p>
-                    </div>
-                </div>
-                
-                <!-- Cert 4 -->
-                <div class="cert-card reveal">
-                    <div class="cert-img-wrapper">
-                        <a href="/images/certificates/devopsforbussiness.png" target="_blank">
-                            <img src="/images/certificates/devopsforbussiness.png" alt="DevOps for Business">
-                        </a>
-                    </div>
-                    <div class="cert-info">
-                        <h4>DevOps for Business</h4>
-                        <p>LinkedIn Learning (2025)</p>
-                    </div>
+                <!-- Certificates Highlight Section -->
+                <div class="section-header reveal" style="margin-top: 80px;" id="certificates">
+                    <h2>Chứng Chỉ & Khóa Học</h2>
+                    <div class="header-line"></div>
+                    <p class="section-desc">Các chứng chỉ chuyên môn và khóa học tôi đã hoàn thành để nâng cao nghiệp vụ
+                        System Engineer. Click vào ảnh để xem chi tiết.</p>
                 </div>
 
-                <!-- More Certs would go here -->
+                <div class="certificates-grid">
+                    <!-- Cert 1 -->
+                    <div class="cert-card reveal">
+                        <div class="cert-img-wrapper">
+                            <a href="/images/certificates/Kubernetes.PNG" target="_blank">
+                                <img src="/images/certificates/Kubernetes.PNG" alt="Kubernetes">
+                            </a>
+                        </div>
+                        <div class="cert-info">
+                            <h4>Practical Kubernetes</h4>
+                            <p>TechMaster Vietnam (2024)</p>
+                        </div>
+                    </div>
+
+                    <!-- Cert 2 -->
+                    <div class="cert-card reveal">
+                        <div class="cert-img-wrapper">
+                            <a href="/images/certificates/Devsecops.jpg" target="_blank">
+                                <img src="/images/certificates/Devsecops.jpg" alt="DevSecOps">
+                            </a>
+                        </div>
+                        <div class="cert-info">
+                            <h4>DevOps & DevSecOps</h4>
+                            <p>Chứng chỉ hoàn thành (2024)</p>
+                        </div>
+                    </div>
+
+                    <!-- Cert 3 -->
+                    <div class="cert-card reveal">
+                        <div class="cert-img-wrapper">
+                            <a href="/images/certificates/Docker.jpg" target="_blank">
+                                <img src="/images/certificates/Docker.jpg" alt="Docker">
+                            </a>
+                        </div>
+                        <div class="cert-info">
+                            <h4>Docker For DevOps</h4>
+                            <p>Thực hành chuyên sâu</p>
+                        </div>
+                    </div>
+
+                    <!-- Cert 4 -->
+                    <div class="cert-card reveal">
+                        <div class="cert-img-wrapper">
+                            <a href="/images/certificates/devopsforbussiness.png" target="_blank">
+                                <img src="/images/certificates/devopsforbussiness.png" alt="DevOps for Business">
+                            </a>
+                        </div>
+                        <div class="cert-info">
+                            <h4>DevOps for Business</h4>
+                            <p>LinkedIn Learning (2025)</p>
+                        </div>
+                    </div>
+
+                    <!-- More Certs would go here -->
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <%- include('../partials/footer') %>
+        <%- include('../partials/footer') %>
 
-    <!-- Custom JS -->
-    <script src="/js/script.js"></script>
+            <!-- Custom JS -->
+            <script src="/js/script.js"></script>
 </body>
+
 </html>

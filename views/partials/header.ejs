@@ -7,33 +7,55 @@
             <li><a href="/#skills">Kỹ năng</a></li>
             <li><a href="/#experience">Kinh nghiệm</a></li>
             <li><a href="/#projects">Dự án</a></li>
-            <li><a href="/blog" class="active">Blog</a></li>
-            <li id="loginLink"><a href="javascript:void(0)" class="trigger-login-modal" title="Đăng nhập Quản trị"><i class="fas fa-user-shield"></i></a></li>
-            <li id="userProfileHeader" style="display: none;">
-                <a href="/portal-dashboard">
-                    <img id="headerAvatarImg" src="/img/default-avatar.png" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #2563eb; vertical-align: middle; margin-top: -2px;">
+
+            <!-- Blog Dropdown -->
+            <li class="nav-item-dropdown">
+                <a href="/blog" class="active">Blog <i class="fas fa-chevron-down"
+                        style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+                <ul class="dropdown-menu" id="blogDropdown">
+                    <li><a href="/blog" class="dropdown-item"><i class="fas fa-list"></i> Xem tất cả bài viết</a></li>
+                    <li class="admin-only" style="display: none;"><a href="/create_post" class="dropdown-item"><i
+                                class="fas fa-plus"></i> Viết bài</a></li>
+                    <li class="admin-only" style="display: none;"><a href="/manage_posts" class="dropdown-item"><i
+                                class="fas fa-tasks"></i> Quản lý bài viết</a></li>
+                </ul>
+            </li>
+
+            <!-- Login / Profile -->
+            <li id="loginLink">
+                <a href="javascript:void(0)" class="trigger-login-modal"
+                    style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Đăng nhập</span>
                 </a>
             </li>
+
+            <li id="userProfileHeader" class="nav-item-dropdown" style="display: none;">
+                <a href="javascript:void(0)" style="padding: 0;">
+                    <img id="headerAvatarImg" src="/img/default-avatar.png"
+                        style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);">
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/profile" class="dropdown-item"><i class="fas fa-user-circle"></i> Hồ sơ</a></li>
+                    <li><a href="/settings" class="dropdown-item"><i class="fas fa-cog"></i> Cài đặt</a></li>
+                    <li style="border-top: 1px solid var(--border-color); margin-top: 5px !important;"><a
+                            href="javascript:void(0)" id="logoutBtn" class="dropdown-item"
+                            style="color: #ef4444 !important;"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+                </ul>
+            </li>
         </ul>
-        <a href="/#contact" class="btn-primary nav-cta">Liên hệ ngay</a>
-        <button class="menu-toggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+
+        <div class="nav-actions">
+            <button id="themeToggle" class="theme-toggle-btn" title="Chuyển chế độ sáng/tối">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="/#contact" class="btn-primary nav-cta" style="padding: 8px 20px; font-size: 0.9rem;">Liên hệ
+                ngay</a>
+            <button class="menu-toggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+        </div>
     </div>
 </nav>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
-        if (token && user) {
-            document.getElementById('loginLink').style.display = 'none';
-            const pf = document.getElementById('userProfileHeader');
-            if (pf) {
-                pf.style.display = 'inline-block';
-                if(user.avatar) document.getElementById('headerAvatarImg').src = user.avatar;
-            }
-        }
-    });
-</script>
 
 <!-- Mobile Menu -->
 <div class="mobile-menu">
@@ -47,7 +69,8 @@
         <li id="mobileLogin"><a href="javascript:void(0)" class="trigger-login-modal">Đăng nhập</a></li>
         <li id="mobileProfile" style="display: none;">
             <a href="/portal-dashboard" style="display: flex; align-items: center; gap: 10px;">
-                <img id="mobileAvatarImg" src="/img/default-avatar.png" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #2563eb;">
+                <img id="mobileAvatarImg" src="/img/default-avatar.png"
+                    style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #2563eb;">
                 Hồ sơ
             </a>
         </li>
@@ -55,65 +78,90 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
-        
-        // Header logic
-        if (token && user) {
-            document.getElementById('loginLink').style.display = 'none';
-            const pf = document.getElementById('userProfileHeader');
-            if (pf) {
-                pf.style.display = 'inline-block';
-                const avatarImg = document.getElementById('headerAvatarImg');
-                if (user.avatar && user.avatar.trim() !== "") {
-                    avatarImg.src = user.avatar;
-                } else {
-                    avatarImg.src = '/img/default-avatar.png'; // Silhouette fallback
-                }
-            }
-            
-            // Mobile menu logic
-            document.getElementById('mobileLogin').style.display = 'none';
-            const mp = document.getElementById('mobileProfile');
-            if (mp) {
-                mp.style.display = 'block';
-                const mobAvatar = document.getElementById('mobileAvatarImg');
-                if (user.avatar && user.avatar.trim() !== "") {
-                    mobAvatar.src = user.avatar;
-                } else {
-                    mobAvatar.src = '/img/default-avatar.png';
-                }
-            }
+    document.addEventListener('DOMContentLoaded', async () => {
+        // --- 1. Theme Logic ---
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        const savedTheme = localStorage.getItem('theme') || 'light';
+
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
         }
-    });
 
-    // Toggle menu
-    const menuToggle = document.querySelector('.menu-toggle');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    const closeMenu = document.querySelector('.mobile-menu-close');
-
-    if(menuToggle && mobileMenu) {
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.add('active');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
         });
-    }
 
-    if(closeMenu && mobileMenu) {
-        closeMenu.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
+        // --- 2. Auth Sync Logic ---
+        const updateUI = (user) => {
+            const loginLink = document.getElementById('loginLink');
+            const userProfileHeader = document.getElementById('userProfileHeader');
+            const mobileLogin = document.getElementById('mobileLogin');
+            const mobileProfile = document.getElementById('mobileProfile');
+
+            if (user) {
+                if (loginLink) loginLink.style.display = 'none';
+                if (userProfileHeader) {
+                    userProfileHeader.style.display = 'inline-block';
+                    const avatarImg = document.getElementById('headerAvatarImg');
+                    if (avatarImg && user.avatar) avatarImg.src = user.avatar;
+                }
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+
+                // Mobile
+                if (mobileLogin) mobileLogin.style.display = 'none';
+                if (mobileProfile) {
+                    mobileProfile.style.display = 'block';
+                    const mobAvatar = document.getElementById('mobileAvatarImg');
+                    if (mobAvatar && user.avatar) mobAvatar.src = user.avatar;
+                }
+            } else {
+                if (loginLink) loginLink.style.display = 'flex';
+                if (userProfileHeader) userProfileHeader.style.display = 'none';
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+
+                // Mobile
+                if (mobileLogin) mobileLogin.style.display = 'block';
+                if (mobileProfile) mobileProfile.style.display = 'none';
+            }
+        };
+
+        // Check Auth Status on Load
+        try {
+            const res = await fetch('/api/me', { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                sessionStorage.setItem('currentUser', JSON.stringify(data.user));
+                updateUI(data.user);
+            } else {
+                sessionStorage.removeItem('currentUser');
+                updateUI(null);
+            }
+        } catch (err) {
+            console.error('Auth Check Error:', err);
+            updateUI(null);
+        }
+
+        // --- 3. UI Controls ---
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const closeMenu = document.querySelector('.mobile-menu-close');
+
+        if (menuToggle && mobileMenu) {
+            menuToggle.addEventListener('click', () => mobileMenu.classList.add('active'));
+        }
+        if (closeMenu && mobileMenu) {
+            closeMenu.addEventListener('click', () => mobileMenu.classList.remove('active'));
+        }
+        document.querySelectorAll('.mobile-menu a:not(.trigger-login-modal)').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.remove('active'));
         });
-    }
 
-    // Close on link click
-    document.querySelectorAll('.mobile-menu a:not(.trigger-login-modal)').forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-        });
-    });
-
-    // --- LOGIN MODAL LOGIC ---
-    document.addEventListener('DOMContentLoaded', () => {
+        // --- 4. Login Modal Logic ---
         const loginOverlay = document.getElementById('loginOverlay');
         const closeLoginBtn = document.getElementById('closeLoginBtn');
         const loginForm = document.getElementById('modalLoginForm');
@@ -121,94 +169,85 @@
         const modalPasswordInput = document.getElementById('modalPassword');
         const modalTogglePassword = document.getElementById('modalTogglePassword');
 
-        if (!loginOverlay || !loginForm) return;
+        if (loginOverlay && loginForm) {
+            const showModalAlert = (msg) => {
+                modalAlertBox.textContent = msg;
+                modalAlertBox.style.display = "block";
+                setTimeout(() => { modalAlertBox.style.display = "none"; }, 5000);
+            };
 
-        const showModalAlert = (msg) => {
-            modalAlertBox.textContent = msg;
-            modalAlertBox.style.display = "block";
-            setTimeout(() => { modalAlertBox.style.display = "none"; }, 5000);
-        };
+            const openLoginModal = () => {
+                loginOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                if (mobileMenu) mobileMenu.classList.remove('active');
+            };
 
-        const openLoginModal = () => {
-            loginOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden'; 
-            if (typeof mobileMenu !== 'undefined' && mobileMenu.classList.contains('active')) {
-                mobileMenu.classList.remove('active');
-            }
-        };
+            const closeLoginModal = () => {
+                loginOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            };
 
-        const closeLoginModal = () => {
-            loginOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        };
+            document.querySelectorAll('.trigger-login-modal').forEach(btn => btn.addEventListener('click', openLoginModal));
+            closeLoginBtn.addEventListener('click', closeLoginModal);
+            loginOverlay.addEventListener('click', (e) => { if (e.target === loginOverlay) closeLoginModal(); });
 
-        document.querySelectorAll('.trigger-login-modal').forEach(btn => {
-            btn.addEventListener('click', openLoginModal);
-        });
+            modalTogglePassword.addEventListener('click', () => {
+                const isPass = modalPasswordInput.type === 'password';
+                modalPasswordInput.type = isPass ? 'text' : 'password';
+                modalTogglePassword.classList.replace(isPass ? 'fa-eye' : 'fa-eye-slash', isPass ? 'fa-eye-slash' : 'fa-eye');
+            });
 
-        closeLoginBtn.addEventListener('click', closeLoginModal);
-        loginOverlay.addEventListener('click', (e) => {
-            if (e.target === loginOverlay) closeLoginModal();
-        });
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('modalUsername').value;
+                const password = modalPasswordInput.value;
+                const submitBtn = loginForm.querySelector('.login-modal-btn');
+                const originalBtnContent = submitBtn.innerHTML;
 
-        modalTogglePassword.addEventListener('click', () => {
-            if (modalPasswordInput.type === 'password') {
-                modalPasswordInput.type = 'text';
-                modalTogglePassword.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                modalPasswordInput.type = 'password';
-                modalTogglePassword.classList.replace('fa-eye-slash', 'fa-eye');
-            }
-        });
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
 
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('modalUsername').value;
-            const password = modalPasswordInput.value;
-            
-            const submitBtn = loginForm.querySelector('.login-modal-btn');
-            const originalBtnContent = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+                try {
+                    const res = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password }),
+                        credentials: 'include'
+                    });
 
-            try {
-                const res = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.token) {
-                        localStorage.setItem('token', data.token);
-                        localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    if (res.ok) {
+                        const data = await res.json();
+                        sessionStorage.setItem('currentUser', JSON.stringify(data.user));
                         window.location.href = '/manage_posts';
                     } else {
-                        showModalAlert(data.error || "Đăng nhập thất bại.");
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalBtnContent;
-                    }
-                } else {
-                    const contentType = res.headers.get("content-type");
-                    if (contentType && contentType.indexOf("application/json") !== -1) {
                         const data = await res.json();
-                        showModalAlert(data.error || "Lỗi đăng nhập (" + res.status + ")");
-                    } else {
-                        const text = await res.text();
-                        console.error('Non-JSON Response:', text);
-                        showModalAlert("Lỗi hệ thống (" + res.status + "). Vui lòng báo Admin.");
+                        showModalAlert(data.error || "Đăng nhập thất bại.");
                     }
+                } catch (err) {
+                    showModalAlert("Lỗi kết nối máy chủ.");
+                } finally {
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnContent;
                 }
-            } catch (err) {
-                showModalAlert("Lỗi kết nối máy chủ: " + err.message);
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnContent;
-            }
-        });
+            });
+        }
+
+        // --- 5. Logout Logic ---
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+                    sessionStorage.removeItem('currentUser');
+                    window.location.href = '/';
+                } catch (err) {
+                    window.location.href = '/';
+                }
+            });
+        }
     });
+</script>
 </script>
 
 <!-- Login Modal Overlay -->
@@ -217,21 +256,23 @@
         <i class="fas fa-times login-close-btn" id="closeLoginBtn"></i>
         <div class="login-modal-header">
             <h2>Đăng nhập</h2>
-            <p>Truy cập vào hệ thống quản trị</p>
         </div>
-        
+
         <div id="modalAlertMsg" class="alert alert-error"></div>
 
         <form id="modalLoginForm" class="login-modal-form">
             <div class="form-group">
                 <label for="modalUsername">Tên đăng nhập hoặc Email</label>
-                <input type="text" id="modalUsername" class="form-control" required placeholder="Nhập username hoặc email...">
+                <input type="text" id="modalUsername" class="form-control" required
+                    placeholder="Nhập username hoặc email...">
             </div>
             <div class="form-group">
                 <label for="modalPassword">Mật khẩu</label>
                 <div style="position: relative;">
-                    <input type="password" id="modalPassword" class="form-control" required placeholder="Nhập mật khẩu...">
-                    <i class="fas fa-eye" id="modalTogglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94a3b8;"></i>
+                    <input type="password" id="modalPassword" class="form-control" required
+                        placeholder="Nhập mật khẩu...">
+                    <i class="fas fa-eye" id="modalTogglePassword"
+                        style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #94a3b8;"></i>
                 </div>
             </div>
             <button type="submit" class="btn-primary login-modal-btn">

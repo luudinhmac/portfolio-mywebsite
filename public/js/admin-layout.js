@@ -8,43 +8,47 @@
  */
 
 (function initAdminLayout() {
-    // ── 1. Auth Guard ─────────────────────────────────────────
-    const token = localStorage.getItem('token');
-    if (!token && window.location.pathname.startsWith('/manage_')) {
-        window.location.href = '/';
-        return;
-    }
-
-    if(token) {
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            window.currentUser = payload; // Global attach
-            
-            // Hide admin stuff if not admin
-            document.addEventListener('DOMContentLoaded', () => {
-                if(payload.role !== 'admin') {
-                    document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+    // --- 1. Auth Guard ---
+    const checkAuth = async () => {
+        const user = JSON.parse(sessionStorage.getItem('currentUser') || 'null');
+        
+        // Nếu không có user trong session, thử check server một lần nữa
+        if (!user) {
+            try {
+                const res = await fetch('/api/me', { credentials: 'include' });
+                if ((res.status === 401 || res.status === 403) && window.location.pathname.startsWith('/manage_')) {
+                    sessionStorage.removeItem('currentUser');
+                    window.location.href = '/';
+                    return;
                 }
-            });
-        } catch(e) {
-            localStorage.removeItem('token');
-            window.location.href = '/';
+                const data = await res.json();
+                sessionStorage.setItem('currentUser', JSON.stringify(data.user));
+                window.currentUser = data.user;
+            } catch (err) {
+                if (window.location.pathname.startsWith('/manage_')) {
+                    sessionStorage.removeItem('currentUser');
+                    window.location.href = '/';
+                }
+            }
+        } else {
+            window.currentUser = user;
         }
-    }
 
-    // ── 2. Logout Button Handler ──────────────────────────────
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('#logoutBtn')) {
-            e.preventDefault();
-            localStorage.removeItem('token');
-            window.location.href = '/';
+        // Ẩn các phần tử admin nếu không phải admin
+        if(window.currentUser && window.currentUser.role !== 'admin') {
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
         }
-    });
+    };
+
+    document.addEventListener('DOMContentLoaded', checkAuth);
+
+    // --- 2. Logout Button Handler (Dùng chung với header.ejs) ---
+    // Header.ejs đã xử lý nút này, nên ở đây ta chỉ cần bám vào logic đó nếu cần thiết.
 })();
 
-// ── Helper: lấy token từ localStorage ────────────────────────
+// --- Helper: Không còn cần thiết vì dùng Cookie ---
 function getToken() {
-    return localStorage.getItem('token');
+    return null; 
 }
 
 // ── Helper: hiển thị thông báo alert ─────────────────────────

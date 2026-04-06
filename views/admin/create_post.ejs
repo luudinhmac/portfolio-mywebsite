@@ -75,9 +75,12 @@
             formData.append('document', e.target.files[0]);
             const res = await fetch('/api/upload-word', {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${getToken()}` },
                 body: formData
             });
+            if (res.status === 401 || res.status === 403) {
+                window.location.href = '/';
+                return;
+            }
             const json = await res.json();
             if (res.ok) quill.root.innerHTML += json.html;
         });
@@ -104,9 +107,13 @@
             };
             const res = await fetch('/api/posts', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            if (res.status === 401 || res.status === 403) {
+                window.location.href = '/';
+                return;
+            }
             if (res.ok) window.location.href = '/manage_posts';
         });
 

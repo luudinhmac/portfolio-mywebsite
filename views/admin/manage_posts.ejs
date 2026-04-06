@@ -105,9 +105,12 @@
 
         async function fetchPosts() {
             try {
-                const res = await fetch('/api/posts', {
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
-                });
+                const res = await fetch('/api/posts');
+                if (res.status === 401 || res.status === 403) {
+                    sessionStorage.removeItem('currentUser');
+                    window.location.href = '/';
+                    return;
+                }
                 if (!res.ok) throw new Error('API error');
                 allPosts = await res.json();
                 renderStats(allPosts);
@@ -229,8 +232,7 @@
 
             try {
                 const res = await fetch(`/api/posts/${deleteTargetId}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                    method: 'DELETE'
                 });
                 if (res.ok) { 
                     allPosts = allPosts.filter(p => p.id !== deleteTargetId);
@@ -252,8 +254,7 @@
         async function togglePin(id) {
             try {
                 const res = await fetch(`/api/posts/${id}/pin`, {
-                    method: 'PUT',
-                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                    method: 'PUT'
                 });
                 if(res.ok) {
                     fetchPosts(); // reload table
