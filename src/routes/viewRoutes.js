@@ -59,6 +59,7 @@ router.get('/post/:id', async (req, res) => {
         // Increment views
         await pool.query('UPDATE posts SET views = views + 1 WHERE id = ?', [req.params.id]);
 
+        // Get Current Post
         const [rows] = await pool.query(`
             SELECT p.*, c.name as category, u.fullname as author_name 
             FROM posts p
@@ -66,8 +67,27 @@ router.get('/post/:id', async (req, res) => {
             LEFT JOIN users u ON p.author_id = u.id
             WHERE p.id = ?
         `, [req.params.id]);
+        
         if (rows.length === 0) return res.status(404).send('Post not found');
-        res.render('blog/post', { post: rows[0] });
+        const post = rows[0];
+
+        // Series Navigation
+        let prevPost = null;
+        let nextPost = null;
+        if (post.series) {
+            const [prev] = await pool.query(
+                'SELECT id, title FROM posts WHERE series = ? AND created_at < ? ORDER BY created_at DESC LIMIT 1',
+                [post.series, post.created_at]
+            );
+            const [next] = await pool.query(
+                'SELECT id, title FROM posts WHERE series = ? AND created_at > ? ORDER BY created_at ASC LIMIT 1',
+                [post.series, post.created_at]
+            );
+            prevPost = prev[0] || null;
+            nextPost = next[0] || null;
+        }
+
+        res.render('blog/post', { post, prevPost, nextPost });
     } catch (err) {
         res.status(500).send(err.message);
     }
