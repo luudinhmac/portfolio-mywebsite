@@ -9,7 +9,7 @@
 
 (function initAdminLayout() {
     // ── 1. Auth Guard ─────────────────────────────────────────
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token && window.location.pathname.startsWith('/manage_')) {
         window.location.href = '/';
         return;
@@ -27,7 +27,7 @@
                 }
             });
         } catch(e) {
-            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
             window.location.href = '/';
         }
     }
@@ -36,7 +36,7 @@
     document.addEventListener('click', (e) => {
         if (e.target.closest('#logoutBtn')) {
             e.preventDefault();
-            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
             window.location.href = '/';
         }
     });
@@ -44,7 +44,7 @@
 
 // ── Helper: lấy token từ localStorage ────────────────────────
 function getToken() {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
 }
 
 // ── Helper: hiển thị thông báo alert ─────────────────────────

@@ -1,0 +1,19 @@
+PS D:\DATA\Portfolio> git status
+On branch dev
+Your branch is up to date with 'origin/dev'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   public/js/admin-layout.js
+        modified:   src/controllers/authController.js
+        modified:   src/middleware/auth.js
+        modified:   views/blog/index.ejs
+        modified:   views/blog/post.ejs
+        modified:   views/partials/header.ejs
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        test/
+
+no changes added to commit (use "git add" and/or "git commit -a")

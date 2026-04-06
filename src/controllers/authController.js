@@ -21,6 +21,7 @@ const login = async (req, res) => {
                 process.env.JWT_SECRET || 'fallback_secret_key', 
                 { expiresIn: '8h' }
             );
+            req.session.userId = user.id; // Store in session for server-side validation
             res.json({ 
                 success: true, 
                 token,
@@ -62,6 +63,7 @@ const socialCallback = (req, res) => {
         role: req.user.role
     }));
     
+    req.session.userId = req.user.id; // Store in session for server-side validation
     res.redirect(`/auth-success?token=${token}&user=${userData}`);
 };
 

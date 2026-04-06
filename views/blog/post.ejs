@@ -127,7 +127,7 @@
         const heartIcon = document.getElementById('heartIcon');
 
         async function checkLikeStatus() {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             if(!token) return;
             try {
                 const res = await fetch(`/api/posts/${postId}/like-status`, {
@@ -151,7 +151,7 @@
         }
 
         btnLike.addEventListener('click', async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             if(!token) {
                 alert('Vui lòng đăng nhập để thực hiện tính năng này!');
                 return;
