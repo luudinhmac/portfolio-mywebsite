@@ -119,6 +119,10 @@ router.get('/profile', (req, res) => {
     res.render('admin/profile');
 });
 
+router.get('/settings', (req, res) => {
+    res.render('admin/settings');
+});
+
 router.get('/manage_categories', (req, res) => {
     res.render('admin/manage_categories');
 });

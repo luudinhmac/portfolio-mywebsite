@@ -22,8 +22,13 @@ Chào mừng bạn đến với repo của hệ thống **Portfolio & Blog cá n
 
 ### 🔒 Bảo mật & Tối ưu
 - **🛡️ Authentication**: Sử dụng JWT (JSON Web Token) kết hợp với mã hóa mật khẩu BcryptJS.
-- **✨ Login Modal Overlay**: Chuyển đổi từ trang đăng nhập tĩnh sang cửa sở bật lên (Modal) hiện đại với hiệu ứng Glassmorphism, giúp trải nghiệm người dùng liền mạch hơn.
-- **⚡ Performance & Navigation**: Tối ưu hóa truy vấn MariaDB, tự động điều hướng thông minh sau khi đăng nhập/đăng xuất và cải thiện tốc độ phản hồi trên mọi thiết bị.
+- **✨ Login Modal Overlay**: Cửa sổ đăng nhập hiện đại với hiệu ứng Glassmorphism.
+- **🎨 UI/UX Refined**: 
+    - **Header Compact**: Thu gọn chiều cao thanh Navbar giúp tập trung vào nội dung.
+    - **Dropdown Menu**: Menu đa cấp (Hover) cho Blog và Hồ sơ người dùng.
+    - **🌓 Dark/Light Mode**: Hỗ trợ giao diện sáng/tối linh hoạt với trình chuyển đổi nhanh trên Navbar.
+    - **⚙️ System Settings**: Trang cài đặt cá nhân hóa ngôn ngữ và giao diện (LocalStorage).
+- **⚡ Performance & Navigation**: Tối ưu hóa truy vấn MariaDB, tự động điều hướng thông minh.
 - **🛠️ Debugging & CORS**: Cấu hình CORS linh hoạt cho môi trường phát triển và bổ sung thông báo lỗi chi tiết khi kết nối máy chủ gặp sự cố.
 
 ---

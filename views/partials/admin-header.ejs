@@ -45,6 +45,11 @@
                 </a>
             </li>
             <li>
+                <a href="javascript:void(0)" id="adminThemeToggle" class="nav-links" title="Chuyển chế độ sáng/tối" style="padding: 8px 14px; color: #cbd5e1; cursor: pointer;">
+                    <i class="fas fa-moon"></i>
+                </a>
+            </li>
+            <li>
                 <a href="#" id="logoutBtn" class="nav-logout">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Đăng Xuất</span>
@@ -53,3 +58,35 @@
         </ul>
     </div>
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const adminThemeToggle = document.getElementById('adminThemeToggle');
+        if (adminThemeToggle) {
+            const themeIcon = adminThemeToggle.querySelector('i');
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+
+            adminThemeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                themeIcon.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            });
+        }
+    });
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('currentUser');
+            window.location.href = '/';
+        });
+    }
+</script>

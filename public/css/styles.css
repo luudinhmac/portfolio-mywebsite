@@ -24,6 +24,20 @@
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Dark Mode Variables */
+body.dark-mode {
+  --bg-color: #0f172a;
+  --bg-light: #1e293b;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --secondary: #1e293b;
+}
+
+body.dark-mode .navbar {
+  background: rgba(15, 23, 42, 0.85);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -160,7 +174,7 @@ ul {
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 12px 20px;
+  padding: 8px 20px; /* Reduced from 12px to 8px */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -176,7 +190,7 @@ ul {
 }
 
 .nav-logo {
-  height: 40px;
+  height: 32px; /* Reduced from 40px to 32px */
   width: auto;
   border-radius: 50%;
 }
@@ -194,6 +208,88 @@ ul {
 
 .nav-links a:hover, .nav-links a.active {
   color: var(--primary);
+}
+
+/* Dropdown Menu Styles */
+.nav-item-dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--bg-color);
+  min-width: 180px;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+  backdrop-filter: blur(10px);
+  z-index: 1001;
+}
+
+.nav-item-dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-menu li {
+  margin: 0 !important;
+}
+
+.dropdown-item {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-main) !important;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+
+.dropdown-item:hover {
+  background-color: var(--secondary);
+  color: var(--primary) !important;
+}
+
+.dropdown-item i {
+  width: 18px;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.theme-toggle-btn:hover {
+  color: var(--primary);
+  transform: rotate(15deg);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .menu-toggle {
