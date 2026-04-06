@@ -21,7 +21,10 @@ Chào mừng bạn đến với repo của hệ thống **Portfolio & Blog cá n
 - **🔑 Đăng nhập Đa phương thức**: Hỗ trợ đăng nhập linh hoạt bằng cả **Tên đăng nhập (Username)** hoặc **Địa chỉ Email**.
 
 ### 🔒 Bảo mật & Tối ưu
-- **🛡️ Authentication**: Sử dụng JWT (JSON Web Token) kết hợp với mã hóa mật khẩu BcryptJS.
+- **🛡️ Authentication (Session-based)**:
+    - **Session Cookies**: Sử dụng JWT kết hợp HttpOnly Cookies (`Lax`, `SameSite`) để chia sẻ trạng thái đăng nhập an toàn trên toàn bộ trình duyệt.
+    - **Multi-tab Sync**: Tự động đồng bộ trạng thái đăng nhập/đăng xuất trên tất cả các tab đang mở.
+    - **Auto-Redirect**: Tự động chuyển hướng về trang chủ khi phiên làm việc hết hạn (Server restart hoặc Timeout).
 - **✨ Login Modal Overlay**: Cửa sổ đăng nhập hiện đại với hiệu ứng Glassmorphism.
 - **🎨 UI/UX Refined**: 
     - **Header Compact**: Thu gọn chiều cao thanh Navbar giúp tập trung vào nội dung.
