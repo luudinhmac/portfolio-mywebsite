@@ -61,7 +61,23 @@ async function initDB() {
             FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE
         )`);
 
-        // 6. Seed Default Admin
+        // 6. Tags Table
+        await pool.query(`CREATE TABLE IF NOT EXISTS tags (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(50) UNIQUE NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )`);
+
+        // 7. Post Tags Junction Table
+        await pool.query(`CREATE TABLE IF NOT EXISTS post_tags (
+            post_id INT NOT NULL,
+            tag_id INT NOT NULL,
+            PRIMARY KEY (post_id, tag_id),
+            FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE,
+            FOREIGN KEY (tag_id) REFERENCES tags (id) ON DELETE CASCADE
+        )`);
+
+        // 8. Seed Default Admin
         const [adminExists] = await pool.query('SELECT * FROM users WHERE role = ?', ['admin']);
         if (adminExists.length === 0) {
             const defaultUser = process.env.ADMIN_USERNAME || 'admin';

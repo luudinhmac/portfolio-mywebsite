@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= post.title %> - Lưu Đình Mác</title>
+    <title><%= seo.title %></title>
+    <meta name="description" content="<%= seo.description %>">
+    <meta property="og:title" content="<%= seo.title %>">
+    <meta property="og:description" content="<%= seo.description %>">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://zero2ops.blog/post/<%= post.id %>">
+    <meta property="og:image" content="<%= seo.image %>">
+    <meta name="twitter:card" content="summary_large_image">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -37,6 +44,33 @@
         .series-nav-label { font-size: 0.85rem; color: #64748b; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
         .series-nav-title { font-size: 1.1rem; color: #0f172a; font-weight: 700; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .series-nav-item:hover .series-nav-title { color: var(--primary); }
+
+        .post-tags-detail {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .tag-detail-item {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .tag-detail-item:hover {
+            background: #2563eb;
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-color">
@@ -64,6 +98,15 @@
             <div class="post-body ql-editor">
                 <%- post.content %>
             </div>
+
+            <% if (post.tags && post.tags.length > 0) { %>
+                <div class="post-tags-detail">
+                    <span style="font-weight: 600; color: #64748b; margin-right: 5px; align-self: center;"><i class="fas fa-tags"></i> Tags:</span>
+                    <% post.tags.forEach(tag => { %>
+                        <a href="/blog?tag=<%= encodeURIComponent(tag) %>" class="tag-detail-item">#<%= tag %></a>
+                    <% }) %>
+                </div>
+            <% } %>
         </article>
 
         <% if (typeof locals.prevPost !== 'undefined' && typeof locals.nextPost !== 'undefined' && (locals.prevPost || locals.nextPost)) { %>
