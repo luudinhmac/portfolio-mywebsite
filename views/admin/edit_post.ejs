@@ -45,6 +45,10 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="tags">Tags (Phân cách bằng dấu phẩy)</label>
+                        <input type="text" id="tags" class="form-control" placeholder="vd: Docker, Linux, CI/CD">
+                    </div>
+                    <div class="form-group">
                         <input type="checkbox" id="isPinned"> <label for="isPinned">Ghim bài viết</label>
                     </div>
                     <div class="form-group">
@@ -81,6 +85,7 @@
                 document.getElementById('title').value = post.title;
                 document.getElementById('category_id').value = post.category_id || "";
                 document.getElementById('series').value = post.series;
+                document.getElementById('tags').value = post.tags ? post.tags.join(', ') : "";
                 document.getElementById('isPinned').checked = !!post.is_pinned;
                 quill.root.innerHTML = post.content || '';
                 document.getElementById('postMeta').textContent = `Đang sửa bài: "${post.title}"`;
@@ -95,6 +100,7 @@
                 title: document.getElementById('title').value,
                 category_id: document.getElementById('category_id').value,
                 series: document.getElementById('series').value,
+                tags: document.getElementById('tags').value,
                 is_pinned: document.getElementById('isPinned').checked,
                 content: quill.root.innerHTML
             };

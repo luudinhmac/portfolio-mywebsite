@@ -4,7 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog - Lưu Đình Mác</title>
+    <title><%= seo.title %></title>
+    <meta name="description" content="<%= seo.description %>">
+    <meta property="og:title" content="<%= seo.title %>">
+    <meta property="og:description" content="<%= seo.description %>">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://zero2ops.blog/blog">
+    <meta property="og:image" content="/images/zero2ops.jpg">
+    <meta name="twitter:card" content="summary_large_image">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -80,6 +87,51 @@
             padding: 2px 8px;
             border-radius: 4px;
             font-weight: 600;
+        }
+
+        .tag-item {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .tag-item:hover {
+            background: #e2e8f0;
+            color: #2563eb;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag-cloud-item {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .tag-cloud-item:hover, .tag-cloud-item.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .tag-count {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            margin-left: 4px;
         }
 
         .post-pinned {
@@ -259,6 +311,13 @@
                                                                 <%= new
                                                                     Date(post.created_at).toLocaleDateString('vi-VN') %>
                                                             </span>
+                                                            <% if (post.tags && post.tags.length > 0) { %>
+                                                                <div class="post-tags" style="display:flex; gap:5px; margin-left: auto;">
+                                                                    <% post.tags.forEach(tag => { %>
+                                                                        <a href="/blog?tag=<%= encodeURIComponent(tag) %>" class="tag-item">#<%= tag %></a>
+                                                                    <% }) %>
+                                                                </div>
+                                                            <% } %>
                                                 </div>
                                                 <h2 class="post-title"><a href="/post/<%= post.id %>">
                                                         <%= post.title %>
@@ -303,6 +362,15 @@
                             </a></li>
                         <% }) %>
                 </ul>
+                <h3>Tags</h3>
+                <div class="tag-cloud">
+                    <% allTags.forEach(tag => { %>
+                        <a href="/blog?tag=<%= encodeURIComponent(tag.name) %>" 
+                           class="tag-cloud-item <%= (filters && filters.tag === tag.name) ? 'active' : '' %>">
+                            #<%= tag.name %> <span class="tag-count">(<%= tag.count %>)</span>
+                        </a>
+                    <% }) %>
+                </div>
             </aside>
         </div>
 
@@ -372,6 +440,11 @@
                                 ${post.series ? `<a href="/blog?series=${encodeURIComponent(post.series)}" class="tag-series"><i class="fas fa-layer-group"></i> ${post.series}</a>` : ''}
                                 <a href="/blog?author=${post.author_id}" style="color: #64748b;"><i class="far fa-user"></i> ${post.author_name || 'Admin'}</a>
                                 <span><i class="far fa-calendar-alt"></i> ${date}</span>
+                                ${post.tags && post.tags.length > 0 ? `
+                                    <div class="post-tags" style="display:flex; gap:5px; margin-left: auto;">
+                                        ${post.tags.map(tag => `<a href="/blog?tag=${encodeURIComponent(tag)}" class="tag-item">#${tag}</a>`).join('')}
+                                    </div>
+                                ` : ''}
                             </div>
                             <h2 class="post-title"><a href="/post/${post.id}">${post.title}</a></h2>
                             <div class="engagement-bar">

@@ -11,6 +11,25 @@ const sanitizeOptions = {
     }
 };
 
+async function syncTags(postId, tags) {
+    if (!tags) return;
+    const tagList = Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(t => t);
+    
+    // 1. Remove all old tags for this post
+    await pool.query('DELETE FROM post_tags WHERE post_id = ?', [postId]);
+
+    for (let tagName of tagList) {
+        // 2. Ensure tag exists in 'tags' table
+        await pool.query('INSERT IGNORE INTO tags (name) VALUES (?)', [tagName]);
+        const [tagRows] = await pool.query('SELECT id FROM tags WHERE name = ?', [tagName]);
+        if (tagRows.length > 0) {
+            const tagId = tagRows[0].id;
+            // 3. Link post to tag
+            await pool.query('INSERT IGNORE INTO post_tags (post_id, tag_id) VALUES (?, ?)', [postId, tagId]);
+        }
+    }
+}
+
 const getAllPosts = async (req, res) => {
     try {
         let query = `
@@ -29,6 +48,17 @@ const getAllPosts = async (req, res) => {
         query += ` ORDER BY p.is_pinned DESC, p.created_at DESC `;
 
         const [rows] = await pool.query(query, params);
+
+        // Fetch tags for each post
+        for (let post of rows) {
+            const [tagRows] = await pool.query(`
+                SELECT t.name FROM tags t
+                JOIN post_tags pt ON t.id = pt.tag_id
+                WHERE pt.post_id = ?
+            `, [post.id]);
+            post.tags = tagRows.map(r => r.name);
+        }
+
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -45,14 +75,24 @@ const getPostById = async (req, res) => {
             WHERE p.id = ?
         `, [req.params.id]);
         if (rows.length === 0) return res.status(404).json({ error: "Post not found" });
-        res.json(rows[0]);
+        
+        const post = rows[0];
+        // Fetch tags
+        const [tagRows] = await pool.query(`
+            SELECT t.name FROM tags t
+            JOIN post_tags pt ON t.id = pt.tag_id
+            WHERE pt.post_id = ?
+        `, [post.id]);
+        post.tags = tagRows.map(r => r.name);
+
+        res.json(post);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
 const createPost = async (req, res) => {
-    const { title, content, category_id, series, is_pinned } = req.body;
+    const { title, content, category_id, series, is_pinned, tags } = req.body;
     try {
         const cleanContent = sanitizeHtml(content, sanitizeOptions);
         const author_id = req.user.id;
@@ -61,6 +101,9 @@ const createPost = async (req, res) => {
             `INSERT INTO posts (title, content, category_id, author_id, series, is_pinned) VALUES (?, ?, ?, ?, ?, ?)`,
             [title, cleanContent, category_id || null, author_id, series, pinValue]
         );
+        
+        await syncTags(result.insertId, tags);
+
         res.json({ id: result.insertId, success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -68,7 +111,7 @@ const createPost = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
-    const { title, content, category_id, series, is_pinned } = req.body;
+    const { title, content, category_id, series, is_pinned, tags } = req.body;
     try {
         const [posts] = await pool.query('SELECT author_id FROM posts WHERE id = ?', [req.params.id]);
         if(posts.length === 0) return res.status(404).json({error: 'Post not found'});
@@ -82,6 +125,9 @@ const updatePost = async (req, res) => {
             `UPDATE posts SET title=?, content=?, category_id=?, series=? WHERE id=?`,
             [title, cleanContent, category_id || null, series, req.params.id]
         );
+        
+        await syncTags(req.params.id, tags);
+
         if (req.user.role === 'admin') {
            await pool.query('UPDATE posts SET is_pinned=? WHERE id=?', [is_pinned?1:0, req.params.id]);
         }
